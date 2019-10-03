@@ -47,7 +47,7 @@ class CheckboxesField extends ConditionalFormComponent {
       },
       items: items.map(item => {
         const itemModel = {
-          text: item.text,
+          text: this.localisedString(item.text),
           value: item.value,
           // Do a loose string based check as state may or
           // may not match the item value types.
@@ -62,7 +62,7 @@ class CheckboxesField extends ConditionalFormComponent {
 
         if (item.description) {
           itemModel.hint = {
-            html: item.description
+            html: this.localisedString(item.description)
           }
         }
 

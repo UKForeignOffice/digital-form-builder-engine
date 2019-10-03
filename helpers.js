@@ -1,5 +1,9 @@
 function proceed (request, h, nextUrl, force) {
   let url = nextUrl
+  if (h.realm.pluginOptions.basePath) {
+    let basePath = h.realm.pluginOptions.basePath
+    url = nextUrl.replace(/^/, `/${basePath}`)
+  }
 
   const returnUrl = request.query.returnUrl
   if (returnUrl) {

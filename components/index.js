@@ -18,6 +18,17 @@ class FormComponent extends Component {
   constructor (def, model) {
     super(def, model)
     this.isFormComponent = true
+    this.__lang = 'en' // set default language
+  }
+
+  get lang () {
+    return this.__lang
+  }
+
+  set lang (lang) {
+    if (lang) {
+      this.__lang = lang
+    }
   }
 
   getFormDataFromState (state) {
@@ -54,10 +65,21 @@ class FormComponent extends Component {
       : null
   }
 
+  localisedString (description) {
+    let string
+    if (typeof description === 'string') {
+      string = description
+    } else {
+      string = description[this.lang] ? description[this.lang] : description['en']
+    }
+    return string
+  }
+
   getViewModel (formData, errors) {
     const options = this.options
-    const isOptional = options.required === false
-    const label = this.title + (isOptional ? ' (optional)' : '')
+    const isOptionalString = options.required === false ? '(Optional)' : ''
+    this.lang = formData.lang
+    let label = `${this.localisedString(this.title)} ${isOptionalString}`
 
     const name = this.name
     const model = {
@@ -72,7 +94,7 @@ class FormComponent extends Component {
 
     if (this.hint) {
       model.hint = {
-        html: this.hint
+        html: this.localisedString(this.hint)
       }
     }
 

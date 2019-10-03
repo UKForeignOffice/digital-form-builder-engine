@@ -40,7 +40,7 @@ class SelectField extends FormComponent {
     Object.assign(viewModel, {
       items: [{ text: '' }].concat(items.map(item => {
         return {
-          text: item.text,
+          text: this.localisedString(item.text),
           value: item.value,
           // Do a loose check as state may or
           // may not match the item value types

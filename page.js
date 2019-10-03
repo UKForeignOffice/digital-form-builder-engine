@@ -128,8 +128,14 @@ class Page {
 
   makeGetRouteHandler (getState) {
     return async (request, h) => {
+      let lang = request.query.lang || request.yar.get('lang') || 'en'
+      if (lang !== request.yar.get('lang')) {
+        request.i18n.setLocale(lang)
+        request.yar.set('lang', lang)
+      }
       const state = await getState(request)
       const formData = this.getFormDataFromState(state)
+      formData.lang = request.yar.get('lang')
       return h.view(this.viewName, this.getViewModel(formData))
     }
   }

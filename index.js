@@ -8,20 +8,31 @@ module.exports = {
     name: pkg.name,
     version: pkg.version,
     dependencies: 'vision',
+    multiple: true,
     register: (server, options) => {
-      const { model, ordnanceSurveyKey } = options
+      const { model, basePath } = options
 
       model.pages.forEach(page => {
         // GET
-        server.route(page.makeGetRoute(model.getState))
+        let route = page.makeGetRoute(model.getState)
+        let path = route.path
+        if (route.path) {
+          path = path !== '/' ? path.replace(/^/, `/${basePath}`) : `/${basePath}`
+        }
+        route.path = path
+        server.route(route)
 
         // POST
         if (page.hasFormComponents) {
-          server.route(page.makePostRoute(model.mergeState))
+          let postPath = page.makePostRoute(model.mergeState)
+          postPath.path = path
+          server.route(postPath)
         }
       })
 
-      // FIND ADDRESS
+      /*
+      NOTE:- this should be registered only once, probably not at engine level.
+            // FIND ADDRESS
       server.route({
         method: 'get',
         path: '/__/find-address',
@@ -41,7 +52,7 @@ module.exports = {
             }
           }
         }
-      })
+      }) */
     }
   }
 }

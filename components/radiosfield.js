@@ -30,7 +30,7 @@ class RadiosField extends ConditionalFormComponent {
       },
       items: items.map((item) => {
         const itemModel = {
-          html: item.text,
+          html: this.localisedString(item.text),
           value: item.value,
           // Do a loose string based check as state may or
           // may not match the item value types.
@@ -45,7 +45,7 @@ class RadiosField extends ConditionalFormComponent {
 
         if (item.description) {
           itemModel.hint = {
-            html: item.description
+            html: this.localisedString(item.description)
           }
         }
 
