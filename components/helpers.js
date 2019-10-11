@@ -19,7 +19,7 @@ function buildFormSchema (schemaType, component, isRequired = true) {
   }
 
   if (component.title) {
-    schema = schema.label(component.title.en)
+    schema = schema.label(typeof component.title === 'string' ? component.title : component.title.en)
   }
 
   if (component.options.required === false) {
