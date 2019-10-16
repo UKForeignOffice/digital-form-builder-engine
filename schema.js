@@ -63,7 +63,7 @@ const schema = joi.object().required().keys({
   sections: joi.array().items(sectionsSchema).unique('name').required(),
   conditions: joi.array().items(conditionsSchema).unique('name'),
   lists: joi.array().items(listSchema).unique('name'),
-  fee: joi.array().items(feeSchema).unique('name')
+  fee: joi.array().items(feeSchema).unique('condition')
 })
 
 module.exports = schema
