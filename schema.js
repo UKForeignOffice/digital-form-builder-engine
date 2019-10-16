@@ -52,11 +52,17 @@ const listSchema = joi.object().keys({
   items: joi.array().items(listItemSchema)
 })
 
+const feeSchema = joi.object().keys({
+  name: joi.string().required(),
+  amount: joi.number().required()
+})
+
 const schema = joi.object().required().keys({
   pages: joi.array().required().items(pageSchema).unique('path'),
   sections: joi.array().items(sectionsSchema).unique('name').required(),
   conditions: joi.array().items(conditionsSchema).unique('name'),
-  lists: joi.array().items(listSchema).unique('name')
+  lists: joi.array().items(listSchema).unique('name'),
+  fee: joi.array().items(feeSchema).unique('name')
 })
 
 module.exports = schema
