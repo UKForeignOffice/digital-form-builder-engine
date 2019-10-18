@@ -27,7 +27,8 @@ class Page {
     const components = new ComponentCollection(pageDef.components, model)
     this.components = components
     const conditionalFormComponents = components.formItems.filter(c => c.conditionalComponents)
-    this.hasFormComponents = !!components.formItems.length
+    // this.hasFormComponents = !!components.formItems.length
+    this.hasFormComponents = true
     this.hasConditionalFormComponents = !!conditionalFormComponents.length
 
     // Schema
@@ -61,27 +62,45 @@ class Page {
 
     return { page: this, pageTitle, sectionTitle, showTitle, components, errors }
   }
+  get hasNext () {
+    return Array.isArray(this.pageDef.next) && this.pageDef.next.length > 0
+  }
+  get next () {
+    if (this.hasNext) {
+      const nextPagePaths = this.pageDef.next.map(next => next.path)
+      return this.def.pages.filter(page => {
+        return nextPagePaths.includes(page.path);
+      })
+
+    }
+  }
 
   getNext (state) {
-    const page = this.model.pages.filter(p => p !== this).find(page => {
-      const value = page.section ? state[page.section.name] : state
-      const isRequired = page.condition
-        ? (this.model.conditions[page.condition]).fn(state)
-        : true
+    if (this.hasNext) {
 
-      if (isRequired) {
-        if (!page.hasFormComponents) {
-          return true
-        } else {
-          const error = joi.validate(value || {}, page.stateSchema.required(), this.model.conditionOptions).error
-          const isValid = !error
+      let nextPage = this.next.find(page => {
+        const isRequired = page.condition
+          ? (this.model.conditions[page.condition]).fn(state)
+          : true
 
-          return !isValid
+        if (isRequired) {
+          if (!page.hasFormComponents) {
+            return true
+          } else {
+            const error = joi.validate(value || {}, page.stateSchema.required(), this.model.conditionOptions).error
+            const isValid = !error
+
+            return !isValid
+          }
         }
-      }
-    })
 
-    return (page && page.path) || this.defaultNextPath
+      })
+
+      return nextPage.path
+
+    } else {
+      return this.defaultNextPath
+    }
   }
 
   getFormDataFromState (state) {
