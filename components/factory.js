@@ -740,6 +740,15 @@ const makeComponentTypes = {
         }
       }
     }
+  },
+  FlashCard (component) {
+    return {
+      getViewModel () {
+          return {
+            content: component.content
+          }
+      }
+    }
   }
 }
 

@@ -11,7 +11,9 @@ class Component {
     this.model = model
   }
 
-  getViewModel () { return {} }
+  getViewModel () {
+    return {}
+  }
 }
 
 class FormComponent extends Component {
@@ -60,9 +62,7 @@ class FormComponent extends Component {
   getStateValueFromValidForm (payload) {
     const name = this.name
 
-    return (name in payload && payload[name] !== '')
-      ? payload[name]
-      : null
+    return name in payload && payload[name] !== '' ? payload[name] : null
   }
 
   localisedString (description) {
@@ -70,7 +70,9 @@ class FormComponent extends Component {
     if (typeof description === 'string') {
       string = description
     } else {
-      string = description[this.lang] ? description[this.lang] : description['en']
+      string = description[this.lang]
+        ? description[this.lang]
+        : description['en']
     }
     return string
   }
@@ -115,9 +117,15 @@ class FormComponent extends Component {
     return model
   }
 
-  getFormSchemaKeys () { return { [this.name]: joi.any() } }
-  getStateSchemaKeys () { return { [this.name]: joi.any() } }
-  getDisplayStringFromState (state) { return state[this.name] }
+  getFormSchemaKeys () {
+    return { [this.name]: joi.any() }
+  }
+  getStateSchemaKeys () {
+    return { [this.name]: joi.any() }
+  }
+  getDisplayStringFromState (state) {
+    return state[this.name]
+  }
 }
 
 let Types = null
@@ -125,7 +133,9 @@ function getType (name) {
   if (Types === null) {
     Types = {}
     componentTypes.forEach(componentType => {
-      Types[componentType.name] = require(`./${componentType.name.toLowerCase()}`)
+      Types[
+        componentType.name
+      ] = require(`./${componentType.name.toLowerCase()}`)
     })
   }
 
@@ -154,7 +164,12 @@ class ConditionalFormComponent extends FormComponent {
     // gov.uk design system macros.
     if (item.conditional) {
       itemModel.conditional = {
-        html: nunjucks.render('conditional-components.html', { components: item.conditional.componentCollection.getViewModel(formData, errors) })
+        html: nunjucks.render('conditional-components.html', {
+          components: item.conditional.componentCollection.getViewModel(
+            formData,
+            errors
+          )
+        })
       }
     }
     return itemModel
@@ -163,10 +178,17 @@ class ConditionalFormComponent extends FormComponent {
   getFormDataFromState (state) {
     const formData = super.getFormDataFromState(state)
     if (formData) {
-      const itemsWithConditionalComponents = this.list.items.filter(item => item.conditional && item.conditional.components)
+      const itemsWithConditionalComponents = this.list.items.filter(
+        item => item.conditional && item.conditional.components
+      )
       itemsWithConditionalComponents.forEach(item => {
-        const itemFormDataFromState = item.conditional.componentCollection.getFormDataFromState(state)
-        if (itemFormDataFromState && Object.keys(itemFormDataFromState).length > 0) {
+        const itemFormDataFromState = item.conditional.componentCollection.getFormDataFromState(
+          state
+        )
+        if (
+          itemFormDataFromState &&
+          Object.keys(itemFormDataFromState).length > 0
+        ) {
           Object.assign(formData, itemFormDataFromState)
         }
       })
@@ -180,28 +202,45 @@ class ConditionalFormComponent extends FormComponent {
 
   getStateFromValidForm (payload) {
     const state = super.getStateFromValidForm(payload)
-    const itemsWithConditionalComponents = this.list.items.filter(item => item.conditional && item.conditional.components)
+    const itemsWithConditionalComponents = this.list.items.filter(
+      item => item.conditional && item.conditional.components
+    )
 
-    const selectedItemsWithConditionalComponents = itemsWithConditionalComponents.filter(item => {
-      if (payload[this.name] && Array.isArray(payload[this.name])) {
-        return payload[this.name].find(nestedItem => item.value === nestedItem)
-      } else {
-        return item.value === payload[this.name]
+    const selectedItemsWithConditionalComponents = itemsWithConditionalComponents.filter(
+      item => {
+        if (payload[this.name] && Array.isArray(payload[this.name])) {
+          return payload[this.name].find(
+            nestedItem => item.value === nestedItem
+          )
+        } else {
+          return item.value === payload[this.name]
+        }
       }
-    })
+    )
 
     // Add selected form data associated with conditionally revealed content to the state.
-    selectedItemsWithConditionalComponents.forEach(item => Object.assign(state, item.conditional.componentCollection.getStateFromValidForm(payload)))
+    selectedItemsWithConditionalComponents.forEach(item =>
+      Object.assign(
+        state,
+        item.conditional.componentCollection.getStateFromValidForm(payload)
+      )
+    )
 
     // Add null values to the state for unselected form data associated with conditionally revealed content.
     // This will allow changes in the visibility of onditionally revealed content to be reflected in state correctly.
-    const unselectedItemsWithConditionalComponents = itemsWithConditionalComponents.filter(item => !selectedItemsWithConditionalComponents.includes(item))
+    const unselectedItemsWithConditionalComponents = itemsWithConditionalComponents.filter(
+      item => !selectedItemsWithConditionalComponents.includes(item)
+    )
     unselectedItemsWithConditionalComponents.forEach(item => {
-      const stateFromValidForm = item.conditional.componentCollection.getStateFromValidForm(payload)
-      Object.values(item.conditional.componentCollection.items).filter(conditionalItem => stateFromValidForm[conditionalItem.name]).forEach(key => {
-        const conditionalItemToNull = key.name
-        Object.assign(stateFromValidForm, { [conditionalItemToNull]: null })
-      })
+      const stateFromValidForm = item.conditional.componentCollection.getStateFromValidForm(
+        payload
+      )
+      Object.values(item.conditional.componentCollection.items)
+        .filter(conditionalItem => stateFromValidForm[conditionalItem.name])
+        .forEach(key => {
+          const conditionalItemToNull = key.name
+          Object.assign(stateFromValidForm, { [conditionalItemToNull]: null })
+        })
       Object.assign(state, stateFromValidForm)
     })
     return state
@@ -212,18 +251,27 @@ class ConditionalFormComponent extends FormComponent {
   }
 
   [createConditionalComponents] (def, model) {
-    const filteredItems = this.list.items.filter(item => item.conditional && item.conditional.components)
+    const filteredItems = this.list.items.filter(
+      item => item.conditional && item.conditional.components
+    )
     // Create a collection of conditional components that can be converted to a view model and rendered by Nunjucks
     // before primary view model rendering takes place.
     filteredItems.map(item => {
-      item.conditional.componentCollection = new ComponentCollection(item.conditional.components, model)
+      item.conditional.componentCollection = new ComponentCollection(
+        item.conditional.components,
+        model
+      )
     })
   }
 
   [getSchemaKeys] (schemaType) {
     const schemaName = `${schemaType}Schema`
-    const schemaKeysFunctionName = `get${schemaType.substring(0, 1).toUpperCase()}${schemaType.substring(1)}SchemaKeys`
-    const filteredItems = this.items.filter(item => item.conditional && item.conditional.componentCollection)
+    const schemaKeysFunctionName = `get${schemaType
+      .substring(0, 1)
+      .toUpperCase()}${schemaType.substring(1)}SchemaKeys`
+    const filteredItems = this.items.filter(
+      item => item.conditional && item.conditional.componentCollection
+    )
     const conditionalName = this.name
     const schemaKeys = { [conditionalName]: this[schemaName] }
     const schema = this[schemaName]
@@ -232,25 +280,31 @@ class ConditionalFormComponent extends FormComponent {
     // a) When a conditional component is visible it is required.
     // b) When a conditional component is not visible it is optional.
     filteredItems.forEach(item => {
-      const conditionalSchemaKeys = item.conditional.componentCollection[schemaKeysFunctionName]()
+      const conditionalSchemaKeys = item.conditional.componentCollection[
+        schemaKeysFunctionName
+      ]()
       // Iterate through the set of components handled by conditional reveal adding Joi validation rules
       // based on whether or not the component controlling the conditional reveal is selected.
       Object.keys(conditionalSchemaKeys).forEach(key => {
         Object.assign(schemaKeys, {
-          [key]: joi.alternatives()
-            .when(conditionalName, {
-              is: item.value,
+          [key]: joi.alternatives().when(conditionalName, {
+            is: item.value,
+            then: conditionalSchemaKeys[key].required(),
+            // If multiple checkboxes are selected their values will be held in an array. In this
+            // case conditionally revealed content is required to be entered if the controlliing
+            // checkbox value is a member of the array of selected checkbox values.
+            otherwise: joi.alternatives().when(conditionalName, {
+              is: joi
+                .array()
+                .items(schema.only(item.value), joi.any())
+                .required(),
               then: conditionalSchemaKeys[key].required(),
-              // If multiple checkboxes are selected their values will be held in an array. In this
-              // case conditionally revealed content is required to be entered if the controlliing
-              // checkbox value is a member of the array of selected checkbox values.
-              otherwise: joi.alternatives()
-                .when(conditionalName, {
-                  is: joi.array().items(schema.only(item.value), joi.any()).required(),
-                  then: conditionalSchemaKeys[key].required(),
-                  otherwise: conditionalSchemaKeys[key].optional().allow('').allow(null)
-                })
+              otherwise: conditionalSchemaKeys[key]
+                .optional()
+                .allow('')
+                .allow(null)
             })
+          })
         })
       })
     })
@@ -269,8 +323,14 @@ class ComponentCollection {
 
     this.items = itemTypes
     this.formItems = formItems
-    this.formSchema = joi.object().keys(this.getFormSchemaKeys()).required()
-    this.stateSchema = joi.object().keys(this.getStateSchemaKeys()).required()
+    this.formSchema = joi
+      .object()
+      .keys(this.getFormSchemaKeys())
+      .required()
+    this.stateSchema = joi
+      .object()
+      .keys(this.getStateSchemaKeys())
+      .required()
   }
 
   getFormSchemaKeys () {
@@ -325,5 +385,15 @@ class ComponentCollection {
 }
 
 // Configure Nunjucks to allow rendering of content that is revealed conditionally.
-nunjucks.configure([path.resolve(__dirname, '../views/components/'), path.resolve(__dirname, '../views/partials/'), path.resolve(__dirname, '../node_modules/govuk-frontend/components/')])
-module.exports = { Component, FormComponent, ConditionalFormComponent, ComponentCollection }
+nunjucks.configure([
+  path.resolve(__dirname, '../views/components/'),
+  path.resolve(__dirname, '../views/partials/'),
+  path.resolve(__dirname, '../node_modules/govuk-frontend/components/'),
+  path.resolve(__dirname, '../node_modules/hmpo-components/components/')
+])
+module.exports = {
+  Component,
+  FormComponent,
+  ConditionalFormComponent,
+  ComponentCollection
+}
