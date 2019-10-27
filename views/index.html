@@ -2,10 +2,9 @@
 {% from "partials/components.html" import componentList %}
 
 {% extends 'layout.html' %}
-
-{% set gridSize = gridSize | default('two-thirds') %}
 {% block content %}
 
+{% set gridSize = "full" if components[0].type == 'FlashCard' else "two-thirds" %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-{{gridSize}}">
       {% if errors %}

@@ -24,7 +24,6 @@
         </form>
 
 {% endmacro %}
-{% extends 'layout.html' %}
 {% set gridSize = 'full' %}
 {% macro FlashCard(component) %}
     {{ hmpoFlashCard({content: hmpoCircleStepList({items: component.model.content }) }) }}
