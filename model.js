@@ -89,6 +89,32 @@ class Model {
     return schema
   }
 
+  makeFilteredSchema (state, relevantPages) {
+    // Build the entire model schema
+    // from the individual pages/sections
+    let schema = joi.object().required()
+    ;[undefined].concat(this.sections).forEach(section => {
+      const sectionPages = relevantPages.filter(page => page.section === section)
+
+      if (section) {
+        let sectionSchema = joi.object().required()
+        sectionPages.forEach(sectionPage => {
+          sectionSchema = sectionSchema.concat(sectionPage.stateSchema)
+        })
+
+        schema = schema.append({
+          [section.name]: sectionSchema
+        })
+      } else {
+        sectionPages.forEach(sectionPage => {
+          schema = schema.concat(sectionPage.stateSchema)
+        })
+      }
+    })
+
+    return schema
+  }
+
   makePage (pageDef) {
     if (pageDef.controller) {
       const pageControllerPath = path.resolve(this.options.relativeTo, pageDef.controller)
