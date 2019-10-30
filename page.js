@@ -146,33 +146,21 @@ class Page {
     return this.validate(newState, this.stateSchema)
   }
 
-  get lang () {
-    if(!this.__lang) {
-      this.lang = 'en'
-    }
-    return this.__lang
-  }
-
-  set lang (lang) {
-    if (lang) {
-      this.__lang = lang
-    }
-  }
-
-  setLangFromRequest (request) {
-    this.lang = request.query.lang || request.yar.get('lang') || 'en'
+  langFromRequest (request) {
+    let lang = request.query.lang || request.yar.get('lang') || 'en'
     if (this.lang !== request.yar.get('lang')) {
-      request.i18n.setLocale(this.lang)
-      request.yar.set('lang', this.lang)
+      request.i18n.setLocale(lang)
+      request.yar.set('lang', lang)
     }
+    return request.yar.get('lang')
   }
 
   makeGetRouteHandler (getState) {
     return async (request, h) => {
-      this.setLangFromRequest(request)
+      let lang = this.langFromRequest(request)
       const state = await getState(request)
       const formData = this.getFormDataFromState(state)
-      formData.lang = this.lang
+      formData.lang = lang
       return h.view(this.viewName, this.getViewModel(formData))
     }
   }
@@ -227,13 +215,13 @@ class Page {
     return this.section ? { [this.section.name]: value } : value
   }
 
-  localisedString (description) {
+  localisedString (description, lang) {
     let string
     if (typeof description === 'string') {
       string = description
     } else {
-      string = description[this.lang]
-        ? description[this.lang]
+      string = description[lang]
+        ? description[lang]
         : description['en']
     }
     return string
