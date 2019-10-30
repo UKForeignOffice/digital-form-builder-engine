@@ -69,19 +69,22 @@ class Page {
     if (this.hasNext) {
       const nextPagePaths = this.pageDef.next.map(next => next.path)
       return this.def.pages.filter(page => {
-        return nextPagePaths.includes(page.path);
+        return nextPagePaths.includes(page.path)
       })
-
     }
   }
 
   getNext (state) {
     if (this.hasNext) {
+      let nextPageWithoutCondition = this.next.find(page => {
+        return !page.condition
+      })
 
       let nextPage = this.next.find(page => {
+        const value = page.section ? state[page.section.name] : state
         const isRequired = page.condition
           ? (this.model.conditions[page.condition]).fn(state)
-          : true
+          : false
 
         if (isRequired) {
           if (!page.hasFormComponents) {
@@ -93,11 +96,9 @@ class Page {
             return !isValid
           }
         }
-
       })
 
-      return nextPage.path
-
+      return nextPage ? nextPage.path : nextPageWithoutCondition.path
     } else {
       return this.defaultNextPath
     }
@@ -145,16 +146,33 @@ class Page {
     return this.validate(newState, this.stateSchema)
   }
 
+  get lang () {
+    if(!this.__lang) {
+      this.lang = 'en'
+    }
+    return this.__lang
+  }
+
+  set lang (lang) {
+    if (lang) {
+      this.__lang = lang
+    }
+  }
+
+  setLangFromRequest (request) {
+    this.lang = request.query.lang || request.yar.get('lang') || 'en'
+    if (this.lang !== request.yar.get('lang')) {
+      request.i18n.setLocale(this.lang)
+      request.yar.set('lang', this.lang)
+    }
+  }
+
   makeGetRouteHandler (getState) {
     return async (request, h) => {
-      let lang = request.query.lang || request.yar.get('lang') || 'en'
-      if (lang !== request.yar.get('lang')) {
-        request.i18n.setLocale(lang)
-        request.yar.set('lang', lang)
-      }
+      this.setLangFromRequest(request)
       const state = await getState(request)
       const formData = this.getFormDataFromState(state)
-      formData.lang = request.yar.get('lang')
+      formData.lang = this.lang
       return h.view(this.viewName, this.getViewModel(formData))
     }
   }
@@ -207,6 +225,18 @@ class Page {
 
   getPartialMergeState (value) {
     return this.section ? { [this.section.name]: value } : value
+  }
+
+  localisedString (description) {
+    let string
+    if (typeof description === 'string') {
+      string = description
+    } else {
+      string = description[this.lang]
+        ? description[this.lang]
+        : description['en']
+    }
+    return string
   }
 
   get viewName () { return 'index' }

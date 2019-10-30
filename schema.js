@@ -59,7 +59,7 @@ const feeSchema = joi.object().keys({
 })
 
 const schema = joi.object().required().keys({
-  serviceName: localisedString.optional(),
+  name: localisedString.optional(),
   pages: joi.array().required().items(pageSchema).unique('path'),
   sections: joi.array().items(sectionsSchema).unique('name').required(),
   conditions: joi.array().items(conditionsSchema).unique('name'),
