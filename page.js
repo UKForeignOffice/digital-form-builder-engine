@@ -148,7 +148,7 @@ class Page {
 
   langFromRequest (request) {
     let lang = request.query.lang || request.yar.get('lang') || 'en'
-    if (this.lang !== request.yar.get('lang')) {
+    if (lang !== request.yar.get('lang')) {
       request.i18n.setLocale(lang)
       request.yar.set('lang', lang)
     }
