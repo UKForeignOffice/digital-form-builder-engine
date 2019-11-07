@@ -18,7 +18,8 @@ const componentSchema = joi.object().keys({
   title: localisedString,
   hint: localisedString.optional(),
   options: joi.object().default({}),
-  schema: joi.object().default({})
+  schema: joi.object().default({}),
+  errors: joi.object({ a: joi.any() }).optional()
 }).unknown(true)
 
 const nextSchema = joi.object().keys({
@@ -58,13 +59,20 @@ const feeSchema = joi.object().keys({
   condition: joi.string().required()
 })
 
+const metadataSchema = joi.object().keys({
+  post: joi.string(),
+  caseType: joi.string(),
+  summary: joi.string()
+})
+
 const schema = joi.object().required().keys({
   name: localisedString.optional(),
   pages: joi.array().required().items(pageSchema).unique('path'),
   sections: joi.array().items(sectionsSchema).unique('name').required(),
   conditions: joi.array().items(conditionsSchema).unique('name'),
   lists: joi.array().items(listSchema).unique('name'),
-  fees: joi.array().items(feeSchema).optional()
+  fees: joi.array().items(feeSchema).optional(),
+  metadata: joi.object({ a: joi.any() }).unknown().optional()
 })
 
 module.exports = schema

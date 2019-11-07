@@ -75,6 +75,11 @@ module.exports = [
     subType: 'field'
   },
   {
+    name: 'FileUploadField',
+    title: 'File upload field',
+    subType: 'field'
+  },
+  {
     name: 'Para',
     title: 'Paragraph',
     subType: 'content'

@@ -42,6 +42,10 @@ class DateField extends FormComponent {
     viewModel.type = 'date'
     return viewModel
   }
+
+  get dataType() {
+    return 'date'
+  }
 }
 
 module.exports = DateField

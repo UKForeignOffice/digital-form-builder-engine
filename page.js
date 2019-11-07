@@ -161,6 +161,14 @@ class Page {
       const state = await getState(request)
       const formData = this.getFormDataFromState(state)
       formData.lang = lang
+      let originalFilenames = request.yar.get('originalFilenames')
+      if(originalFilenames) {
+        Object.entries(formData).forEach(([key, value]) => {
+          if (value === (originalFilenames[key] || {}).location) {
+            formData[key] = originalFilenames[key].originalFilename
+          }
+        })
+      }
       return h.view(this.viewName, this.getViewModel(formData))
     }
   }
@@ -168,7 +176,12 @@ class Page {
   makePostRouteHandler (mergeState) {
     return async (request, h) => {
       const payload = request.payload
+      const preHandlerErrors = request.pre.errors
       const formResult = this.validateForm(payload)
+
+      if (preHandlerErrors) {
+        formResult.errors.errorList = formResult.errors.errorList ? [...formResult.errors.errorList, ...preHandlerErrors] : preHandlerErrors
+      }
 
       if (formResult.errors) {
         return h.view(this.viewName, this.getViewModel(payload, formResult.errors))

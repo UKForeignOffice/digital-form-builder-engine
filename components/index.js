@@ -126,6 +126,11 @@ class FormComponent extends Component {
   getDisplayStringFromState (state) {
     return state[this.name]
   }
+  
+  get dataType() {
+    return 'text'
+  }
+  
 }
 
 let Types = null
