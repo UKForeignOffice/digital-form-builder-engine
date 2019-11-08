@@ -78,12 +78,15 @@ class Page {
     if (this.hasNext) {
       let nextPageWithoutCondition = this.next.find(page => {
         return !page.condition
-      })
+      }) || this.defaultNextPath
 
       let nextPage = this.next.find(page => {
         const value = page.section ? state[page.section.name] : state
+
+        let condition = this.model.conditions[page.condition]
+
         const isRequired = page.condition
-          ? (this.model.conditions[page.condition]).fn(state)
+          ? condition.fn(state)
           : false
 
         if (isRequired) {
@@ -97,7 +100,6 @@ class Page {
           }
         }
       })
-
       return nextPage ? nextPage.path : nextPageWithoutCondition.path
     } else {
       return this.defaultNextPath

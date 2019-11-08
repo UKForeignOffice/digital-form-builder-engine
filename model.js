@@ -129,7 +129,11 @@ class Model {
   }
 
   makeCondition (condition) {
-    const parser = new Parser()
+    const parser = new Parser({
+      operators: {
+        logical: true
+      }
+    })
     const { name, value } = condition
     const expr = parser.parse(value)
 
