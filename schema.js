@@ -67,7 +67,7 @@ const metadataSchema = joi.object().keys({
 
 const schema = joi.object().required().keys({
   name: localisedString.optional(),
-  startPage: joi.string().optional(),
+  startPage: joi.string().required(),
   pages: joi.array().required().items(pageSchema).unique('path'),
   sections: joi.array().items(sectionsSchema).unique('name').required(),
   conditions: joi.array().items(conditionsSchema).unique('name'),
