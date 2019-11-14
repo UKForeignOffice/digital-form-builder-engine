@@ -38,9 +38,10 @@ class Model {
     this.sections = def.sections
     this.options = options
 
-    const { getState, mergeState } = options
+    const { getState, mergeState, clearState } = options
     this.getState = getState
     this.mergeState = mergeState
+    this.clearState = clearState
 
     if (options.defaultPageController) {
       const defaultPageControllerPath = path.resolve(options.relativeTo, options.defaultPageController)
