@@ -180,12 +180,21 @@ class Page {
       const payload = request.payload
       const preHandlerErrors = request.pre.errors
       const formResult = this.validateForm(payload)
+      const state = await this.model.getState(request)
+      let { originalFilenames } = state
 
       if (preHandlerErrors) {
         formResult.errors.errorList = formResult.errors.errorList ? [...formResult.errors.errorList, ...preHandlerErrors] : preHandlerErrors
       }
 
       if (formResult.errors) {
+        if (originalFilenames) {
+          Object.entries(payload).forEach(([key, value]) => {
+            if (value === (originalFilenames[key] || {}).location) {
+              payload[key] = originalFilenames[key].originalFilename
+            }
+          })
+        }
         return h.view(this.viewName, this.getViewModel(payload, formResult.errors))
       } else {
         const newState = this.getStateFromValidForm(formResult.value)
