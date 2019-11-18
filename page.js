@@ -163,8 +163,8 @@ class Page {
       const state = await getState(request)
       const formData = this.getFormDataFromState(state)
       formData.lang = lang
-      let originalFilenames = request.yar.get('originalFilenames')
-      if(originalFilenames) {
+      let { originalFilenames } = state
+      if (originalFilenames) {
         Object.entries(formData).forEach(([key, value]) => {
           if (value === (originalFilenames[key] || {}).location) {
             formData[key] = originalFilenames[key].originalFilename
