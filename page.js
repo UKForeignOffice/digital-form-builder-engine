@@ -166,7 +166,7 @@ class Page {
       let { originalFilenames } = state
       if (originalFilenames) {
         Object.entries(formData).forEach(([key, value]) => {
-          if (value === (originalFilenames[key] || {}).location) {
+          if (value && value === (originalFilenames[key] || {}).location) {
             formData[key] = originalFilenames[key].originalFilename
           }
         })
@@ -181,20 +181,21 @@ class Page {
       const preHandlerErrors = request.pre.errors
       const formResult = this.validateForm(payload)
       const state = await this.model.getState(request)
-      let { originalFilenames } = state
+      let originalFilenames = (state || {}).originalFilenames || {}
 
       if (preHandlerErrors) {
         formResult.errors.errorList = formResult.errors.errorList ? [...formResult.errors.errorList, ...preHandlerErrors] : preHandlerErrors
       }
 
+      if (originalFilenames) {
+        Object.entries(payload).forEach(([key, value]) => {
+          if (value && value === (originalFilenames[key] || {}).location) {
+            payload[key] = originalFilenames[key].originalFilename
+          }
+        })
+      }
+
       if (formResult.errors) {
-        if (originalFilenames) {
-          Object.entries(payload).forEach(([key, value]) => {
-            if (value === (originalFilenames[key] || {}).location) {
-              payload[key] = originalFilenames[key].originalFilename
-            }
-          })
-        }
         return h.view(this.viewName, this.getViewModel(payload, formResult.errors))
       } else {
         const newState = this.getStateFromValidForm(formResult.value)
