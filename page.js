@@ -184,6 +184,7 @@ class Page {
       let originalFilenames = (state || {}).originalFilenames || {}
 
       if (preHandlerErrors) {
+        formResult.errors = Object.is(formResult.errors, null) ? { titleText: 'Fix the following errors' } : formResult.errors
         formResult.errors.errorList = formResult.errors.errorList ? [...formResult.errors.errorList, ...preHandlerErrors] : preHandlerErrors
       }
 
