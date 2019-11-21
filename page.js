@@ -179,13 +179,21 @@ class Page {
     return async (request, h) => {
       const payload = request.payload
       const preHandlerErrors = request.pre.errors
-      const formResult = this.validateForm(payload)
+      let formResult = this.validateForm(payload)
       const state = await this.model.getState(request)
       let originalFilenames = (state || {}).originalFilenames || {}
 
+      //TODO:- Refactor this into a validation method
       if (preHandlerErrors) {
-        formResult.errors = Object.is(formResult.errors, null) ? { titleText: 'Fix the following errors' } : formResult.errors
-        formResult.errors.errorList = formResult.errors.errorList ? [...formResult.errors.errorList, ...preHandlerErrors] : preHandlerErrors
+        let fileFields = this.getViewModel(formResult).components.filter(component => component.type === 'FileUploadField').map(component => component.model)
+        let reformattedErrors = preHandlerErrors.map(error => {
+          let reformatted = error
+          let fieldMeta = fileFields.find(field => field.id === error.name)
+          reformatted.text = reformatted.text.replace(/%s/, fieldMeta ? fieldMeta.label.text.trim() : 'the file')
+          return reformatted
+        })
+        formResult.errors = Object.is(formResult.errors, null) ? { titleText: "Fix the following errors"} : formResult.errors
+        formResult.errors.errorList = formResult.errors.errorList ? [...formResult.errors.errorList, ...reformattedErrors] : reformattedErrors
       }
 
       if (originalFilenames) {
