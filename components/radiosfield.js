@@ -8,7 +8,7 @@ class RadiosField extends ConditionalFormComponent {
     const { list, options, values } = this
 
     if (list.items.length === 2) {
-      options.classes = [...options.classes, 'govuk-radios--inline']
+      options.classes = options.classes ? [...options.classes, 'govuk-radios--inline'] : ['govuk-radios--inline']
     }
 
     const formSchema = helpers.buildFormSchema(list.type, this, options.required !== false).valid(values)
