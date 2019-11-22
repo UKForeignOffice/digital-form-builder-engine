@@ -183,7 +183,7 @@ class Page {
       const state = await this.model.getState(request)
       let originalFilenames = (state || {}).originalFilenames || {}
 
-      //TODO:- Refactor this into a validation method
+      // TODO:- Refactor this into a validation method
       if (preHandlerErrors) {
         let fileFields = this.getViewModel(formResult).components.filter(component => component.type === 'FileUploadField').map(component => component.model)
         let reformattedErrors = preHandlerErrors.map(error => {
@@ -192,7 +192,7 @@ class Page {
           reformatted.text = reformatted.text.replace(/%s/, fieldMeta ? fieldMeta.label.text.trim() : 'the file')
           return reformatted
         })
-        formResult.errors = Object.is(formResult.errors, null) ? { titleText: "Fix the following errors"} : formResult.errors
+        formResult.errors = Object.is(formResult.errors, null) ? { titleText: 'Fix the following errors' } : formResult.errors
         formResult.errors.errorList = formResult.errors.errorList ? [...formResult.errors.errorList, ...reformattedErrors] : reformattedErrors
       }
 

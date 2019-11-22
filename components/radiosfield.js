@@ -7,7 +7,7 @@ class RadiosField extends ConditionalFormComponent {
 
     const { list, options, values } = this
 
-    if (list.length === 2) {
+    if (list.items.length === 2) {
       options.classes = [...options.classes, 'govuk-radios--inline']
     }
 
