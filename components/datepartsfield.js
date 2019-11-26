@@ -29,10 +29,11 @@ class DatePartsField extends FormComponent {
   getFormDataFromState (state) {
     const name = this.name
     const value = state[name]
+    const dateValue = new Date(value)
     return {
-      [`${name}__day`]: value && value.getDate(),
-      [`${name}__month`]: value && value.getMonth() + 1,
-      [`${name}__year`]: value && value.getFullYear()
+      [`${name}__day`]: value && dateValue.getDate(),
+      [`${name}__month`]: value && dateValue.getMonth() + 1,
+      [`${name}__year`]: value && dateValue.getFullYear()
     }
   }
 
