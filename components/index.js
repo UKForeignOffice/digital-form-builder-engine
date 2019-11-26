@@ -79,9 +79,13 @@ class FormComponent extends Component {
 
   getViewModel (formData, errors) {
     const options = this.options
-    const isOptionalString = options.required === false ? '(Optional)' : ''
+    const isOptional = options.required === false
+    let optionalText = isOptional ? ' (Optional)' : ''
+    if (isOptional && options.optionalText === false) {
+      optionalText = ''
+    }
     this.lang = formData.lang
-    let label = `${this.localisedString(this.title)} ${isOptionalString}`
+    let label = `${this.localisedString(this.title)}${optionalText}`
 
     const name = this.name
     const model = {
@@ -126,11 +130,11 @@ class FormComponent extends Component {
   getDisplayStringFromState (state) {
     return state[this.name]
   }
-  
+
   get dataType() {
     return 'text'
   }
-  
+
 }
 
 let Types = null
