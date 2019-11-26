@@ -9,9 +9,9 @@ class DatePartsField extends FormComponent {
     const stateSchema = helpers.buildStateSchema('date', this)
 
     const children = new ComponentCollection([
-      { type: 'NumberField', name: `${name}__day`, title: 'Day', schema: { min: 1, max: 31 }, options: { required: options.required, classes: 'govuk-input--width-2' } },
-      { type: 'NumberField', name: `${name}__month`, title: 'Month', schema: { min: 1, max: 12 }, options: { required: options.required, classes: 'govuk-input--width-2' } },
-      { type: 'NumberField', name: `${name}__year`, title: 'Year', schema: { min: 1000, max: 3000 }, options: { required: options.required, classes: 'govuk-input--width-4' } }
+      { type: 'NumberField', name: `${name}__day`, title: 'Day', schema: { min: 1, max: 31 }, options: { required: options.required, optionalText: options.optionalText, classes: 'govuk-input--width-2' } },
+      { type: 'NumberField', name: `${name}__month`, title: 'Month', schema: { min: 1, max: 12 }, options: { required: options.required, optionalText: options.optionalText, classes: 'govuk-input--width-2' } },
+      { type: 'NumberField', name: `${name}__year`, title: 'Year', schema: { min: 1000, max: 3000 }, options: { required: options.required, optionalText: options.optionalText, classes: 'govuk-input--width-4' } }
     ], def)
 
     this.children = children
