@@ -74,7 +74,7 @@ const schema = joi.object().required().keys({
   lists: joi.array().items(listSchema).unique('name'),
   fees: joi.array().items(feeSchema).optional(),
   metadata: joi.object({ a: joi.any() }).unknown().optional(),
-  personalisations: joi.items(joi.string())
+  personalisations: joi.array().items(joi.string())
 })
 
 module.exports = schema
