@@ -65,6 +65,11 @@ const metadataSchema = joi.object().keys({
   summary: joi.string()
 })
 
+const notifySchema = joi.object().keys({
+  templateId: joi.string(),
+  personalisation: joi.array().items(joi.string())
+})
+
 const schema = joi.object().required().keys({
   name: localisedString.optional(),
   startPage: joi.string().required(),
@@ -74,7 +79,7 @@ const schema = joi.object().required().keys({
   lists: joi.array().items(listSchema).unique('name'),
   fees: joi.array().items(feeSchema).optional(),
   metadata: joi.object({ a: joi.any() }).unknown().optional(),
-  personalisations: joi.array().items(joi.string())
+  notify: notifySchema
 })
 
 module.exports = schema
