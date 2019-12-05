@@ -67,7 +67,8 @@ const metadataSchema = joi.object().keys({
 
 const notifySchema = joi.object().keys({
   templateId: joi.string(),
-  personalisation: joi.array().items(joi.string())
+  personalisation: joi.array().items(joi.string()),
+  emailField: joi.string()
 })
 
 const schema = joi.object().required().keys({
