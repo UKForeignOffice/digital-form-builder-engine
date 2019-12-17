@@ -4,7 +4,10 @@ function buildSchema (type, keys) {
   let schema = type.isJoi ? type : joi[type]()
 
   Object.keys(keys).forEach(key => {
-    const val = keys[key]
+    let val = keys[key]
+    if (key === 'regex' ) {
+      val = new RegExp(val)
+    }
     schema = schema[key](typeof val === 'boolean' ? undefined : val)
   })
 
