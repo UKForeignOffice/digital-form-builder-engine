@@ -749,6 +749,15 @@ const makeComponentTypes = {
           }
       }
     }
+  },
+  List (component) {
+    return {
+      getViewModel () {
+        return {
+          content: component.content
+        }
+      }
+    }
   }
 }
 

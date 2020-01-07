@@ -103,5 +103,10 @@ module.exports = [
     name: 'FlashCard',
     title: 'Flash card',
     subType: 'content'
+  },
+  {
+    name: 'List',
+    title: 'List',
+    subType: 'content'
   }
 ]
