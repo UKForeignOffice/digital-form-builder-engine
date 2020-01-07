@@ -41,6 +41,7 @@ class Page {
     let pageTitle = this.title
     const sectionTitle = this.section && this.section.title
     const components = this.components.getViewModel(formData, errors)
+
     const formComponents = components.filter(c => c.isFormComponent)
     const hasSingleFormComponent = formComponents.length === 1
     const singleFormComponent = hasSingleFormComponent && formComponents[0]
@@ -171,7 +172,25 @@ class Page {
           }
         })
       }
-      return h.view(this.viewName, this.getViewModel(formData))
+      let viewModel = this.getViewModel(formData)
+      viewModel.components = viewModel.components.filter(component => {
+        if(component.model.content && component.model.condition) {
+          let condition = this.model.conditions[component.model.condition]
+          return condition.fn(state)
+        }
+        return true
+      })
+      viewModel.components = viewModel.components.map(component => {
+        let evaluatedComponent = component
+        let content = evaluatedComponent.model.content
+        if(content instanceof Array) {
+          evaluatedComponent.model.content = content.filter(item => item.condition ? this.model.conditions[item.condition].fn(state) : true)
+        }
+        return evaluatedComponent
+      })
+
+
+      return h.view(this.viewName, viewModel)
     }
   }
 

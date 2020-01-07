@@ -5,7 +5,7 @@ function buildSchema (type, keys) {
 
   Object.keys(keys).forEach(key => {
     let val = keys[key]
-    if (key === 'regex' ) {
+    if (key === 'regex') {
       val = new RegExp(val)
     }
     schema = schema[key](typeof val === 'boolean' ? undefined : val)

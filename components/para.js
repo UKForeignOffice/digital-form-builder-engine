@@ -2,9 +2,15 @@ const { Component } = require('.')
 
 class Para extends Component {
   getViewModel () {
-    return {
+    let model = {
       content: this.content
     }
+
+    if (this.options.condition) {
+      model.condition = this.options.condition
+    }
+
+    return model
   }
 }
 

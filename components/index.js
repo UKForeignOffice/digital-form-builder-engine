@@ -108,6 +108,10 @@ class FormComponent extends Component {
       model.classes = options.classes
     }
 
+    if (options.condition) {
+      model.condition = options.condition
+    }
+
     if (errors) {
       errors.errorList.forEach(err => {
         if (err.name === name) {
@@ -131,10 +135,9 @@ class FormComponent extends Component {
     return state[this.name]
   }
 
-  get dataType() {
+  get dataType () {
     return 'text'
   }
-
 }
 
 let Types = null
@@ -142,9 +145,7 @@ function getType (name) {
   if (Types === null) {
     Types = {}
     componentTypes.forEach(componentType => {
-      Types[
-        componentType.name
-      ] = require(`./${componentType.name.toLowerCase()}`)
+      Types[componentType.name] = require(`./${componentType.name.toLowerCase()}`)
     })
   }
 

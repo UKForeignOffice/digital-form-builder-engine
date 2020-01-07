@@ -43,7 +43,8 @@ const listItemSchema = joi.object().keys({
   description: localisedString.optional(),
   conditional: joi.object().keys({
     components: joi.array().required().items(componentSchema.unknown(true)).unique('name')
-  })
+  }),
+  condition: joi.string().allow('').optional()
 })
 
 const listSchema = joi.object().keys({
