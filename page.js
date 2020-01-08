@@ -50,6 +50,10 @@ class Page {
     if (hasSingleFormComponent && singleFormComponentIsFirst) {
       const label = singleFormComponent.model.label
 
+      if (pageTitle) {
+        label.text = pageTitle
+      }
+
       if (this.section) {
         label.html =
           `<span class="govuk-caption-xl">${this.section.title}</span> ${label.text}`
@@ -57,7 +61,7 @@ class Page {
 
       label.isPageHeading = true
       label.classes = 'govuk-label--xl'
-      pageTitle = label.text
+      pageTitle = pageTitle || label.text
       showTitle = false
     }
 
