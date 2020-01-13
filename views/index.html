@@ -13,7 +13,7 @@
 
       {% include "partials/heading.html" %}
 
-      {% if page.hasFormComponents or page.hasNext %}
+      {% if page.hasNext %}
         {% include "partials/form.html" %}
       {% else %}
         {{ componentList(components) }}
