@@ -178,7 +178,7 @@ class Page {
       }
       let viewModel = this.getViewModel(formData)
       viewModel.components = viewModel.components.filter(component => {
-        if((component.model.content || component.type === 'Details') && component.model.condition) {
+        if ((component.model.content || component.type === 'Details') && component.model.condition) {
           let condition = this.model.conditions[component.model.condition]
           return condition.fn(state)
         }
@@ -187,7 +187,7 @@ class Page {
       viewModel.components = viewModel.components.map(component => {
         let evaluatedComponent = component
         let content = evaluatedComponent.model.content
-        if(content instanceof Array) {
+        if (content instanceof Array) {
           evaluatedComponent.model.content = content.filter(item => item.condition ? this.model.conditions[item.condition].fn(state) : true)
         }
         return evaluatedComponent

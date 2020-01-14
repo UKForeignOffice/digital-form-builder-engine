@@ -66,28 +66,7 @@ class Model {
   makeSchema (state) {
     // Build the entire model schema
     // from the individual pages/sections
-    let schema = joi.object().required()
-    ;[undefined].concat(this.sections).forEach(section => {
-      const sectionPages = this.pages.filter(page => page.section === section)
-
-      if (section) {
-        let sectionSchema = joi.object().required()
-
-        sectionPages.forEach(sectionPage => {
-          sectionSchema = sectionSchema.concat(sectionPage.stateSchema)
-        })
-
-        schema = schema.append({
-          [section.name]: sectionSchema
-        })
-      } else {
-        sectionPages.forEach(sectionPage => {
-          schema = schema.concat(sectionPage.stateSchema)
-        })
-      }
-    })
-
-    return schema
+    return this.makeFilteredSchema(state, this.pages)
   }
 
   makeFilteredSchema (state, relevantPages) {
@@ -97,19 +76,21 @@ class Model {
     ;[undefined].concat(this.sections).forEach(section => {
       const sectionPages = relevantPages.filter(page => page.section === section)
 
-      if (section) {
-        let sectionSchema = joi.object().required()
-        sectionPages.forEach(sectionPage => {
-          sectionSchema = sectionSchema.concat(sectionPage.stateSchema)
-        })
+      if (sectionPages.length > 0) {
+        if (section) {
+          let sectionSchema = joi.object().required()
+          sectionPages.forEach(sectionPage => {
+            sectionSchema = sectionSchema.concat(sectionPage.stateSchema)
+          })
 
-        schema = schema.append({
-          [section.name]: sectionSchema
-        })
-      } else {
-        sectionPages.forEach(sectionPage => {
-          schema = schema.concat(sectionPage.stateSchema)
-        })
+          schema = schema.append({
+            [section.name]: sectionSchema
+          })
+        } else {
+          sectionPages.forEach(sectionPage => {
+            schema = schema.concat(sectionPage.stateSchema)
+          })
+        }
       }
     })
 
