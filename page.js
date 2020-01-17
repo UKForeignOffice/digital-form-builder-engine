@@ -105,7 +105,11 @@ class Page {
           }
         }
       })
-      return nextPage ? nextPage.path : nextPageWithoutCondition.path
+      let path = nextPage ? nextPage.path : nextPageWithoutCondition.path
+      if (this.model.basePath) {
+        path = `/${this.model.basePath}${path}`
+      }
+      return path
     } else {
       return this.defaultNextPath
     }
@@ -285,7 +289,7 @@ class Page {
   }
 
   get viewName () { return 'index' }
-  get defaultNextPath () { return '/summary' }
+  get defaultNextPath () { return `${this.model.basePath || ''}/summary` }
   get validationOptions () { return { abortEarly: false } }
   get conditionOptions () { return this.model.conditionOptions }
   get errorSummaryTitle () { return 'Fix the following errors' }

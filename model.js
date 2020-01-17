@@ -48,6 +48,8 @@ class Model {
       this.DefaultPageController = require(defaultPageControllerPath)
     }
 
+    this.basePath = options.basePath
+
     this.conditions = {}
     def.conditions.forEach(conditionDef => {
       const condition = this.makeCondition(conditionDef)
