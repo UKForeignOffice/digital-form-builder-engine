@@ -1,4 +1,3 @@
-const joi = require('joi')
 const boom = require('boom')
 const pkg = require('./package.json')
 const addressService = require('./address-service')
@@ -26,6 +25,7 @@ module.exports = {
           const {id, configuration} = request.payload
           let model = new Model(configuration, modelOptions)
           forms[id] = model
+          return h.response({}).code(204)
         }
       })
 
@@ -80,7 +80,6 @@ module.exports = {
         },
 
       })
-
 
 
       /*model.pages.forEach(page => {
