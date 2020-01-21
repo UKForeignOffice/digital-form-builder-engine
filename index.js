@@ -81,45 +81,6 @@ module.exports = {
 
       })
 
-
-      /*model.pages.forEach(page => {
-        // GET
-        let route = page.makeGetRoute(model.getState)
-        let path = route.path
-        if (path === '/') {
-          hasRootPage = true
-        }
-        if (route.path) {
-          path = path !== '/' ? path.replace(/^/, `/${basePath}`) : `/${basePath}`
-        }
-        route.path = path
-        server.route(route)
-
-        // POST
-        if (page.hasFormComponents) {
-          let postPath = page.makePostRoute(model.mergeState)
-          postPath.path = path
-          server.route(postPath)
-        }
-      })
-
-      if (!hasRootPage) {
-        server.route({
-          method: 'get',
-          path: `/${basePath}`,
-          handler: (request, h) => {
-            let startPageRedirect = h.redirect(`/${basePath}${model.def.pages[0].path}`)
-            let startPage = model.def.startPage
-            if (startPage.startsWith('http')) {
-              startPageRedirect = h.redirect(startPage)
-            } else if (model.def.pages.find(page => page.path === startPage)) {
-              startPageRedirect = h.redirect(`/${basePath}${startPage}`)
-            }
-            return startPageRedirect
-          }
-        })
-      }*/
-
       /*
       NOTE:- this should be registered only once, probably not at engine level.
             // FIND ADDRESS
