@@ -10,7 +10,7 @@ module.exports = {
     dependencies: 'vision',
     multiple: true,
     register: (server, options) => {
-      const { modelOptions, configs } = options
+      const { modelOptions, configs, previewMode } = options
 
       let hasRootPage = false
       const forms = {}
@@ -18,16 +18,18 @@ module.exports = {
         forms[config.id] = new Model(config.configuration, {...modelOptions, basePath: config.id})
       })
 
-      server.route({
-        method: 'post',
-        path: `/publish`,
-        handler: (request, h) => {
-          const {id, configuration} = request.payload
-          let model = new Model(configuration, modelOptions)
-          forms[id] = model
-          return h.response({}).code(204)
-        }
-      })
+      if (previewMode) {
+        server.route({
+          method: 'post',
+          path: `/publish`,
+          handler: (request, h) => {
+            const {id, configuration} = request.payload
+            let model = new Model(configuration, modelOptions)
+            forms[id] = model
+            return h.response({}).code(204)
+          }
+        })
+      }
 
       server.route({
         method: 'get',
@@ -36,13 +38,13 @@ module.exports = {
           const { path, id } = request.params
           let model = forms[id]
           if (!model) {
-            console.log('oops')
+            return h.response({}).code(404)
           }
           let page = model.pages.find(page => page.path.replace(/^\//,'') === path)
           if (page) {
             return page.makeGetRouteHandler(model.getState)(request, h)
           } else {
-            console.log('err')
+            return h.response({}).code(404)
           }
         }
       })
@@ -59,26 +61,24 @@ module.exports = {
           payload: {
             output: 'stream',
             parse: true,
-            maxBytes: Number.MAX_SAFE_INTEGER,
+            maxBytes: 5e+6,
             failAction: 'ignore'
           },
           pre: [{method: handleFiles}],
-
           handler: (request, h) => {
             const { path, id } = request.params
             let model = forms[id]
             if (!model) {
-              console.log('oops')
+              return h.response({}).code(404)
             }
             let page = model.pages.find(page => page.path.replace(/^\//,'') === path)
             if (page) {
               return page.makePostRouteHandler(model.mergeState)(request, h)
             } else {
-              console.log('err')
+              return h.response({}).code(404)
             }
           }
         },
-
       })
 
       /*
