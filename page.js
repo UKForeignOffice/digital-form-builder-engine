@@ -205,14 +205,15 @@ class Page {
   makePostRouteHandler (mergeState) {
     return async (request, h) => {
       let hasFilesizeError = request.payload === null
+      const preHandlerErrors = request.pre.errors
       const payload = request.payload || {}
       let formResult = this.validateForm(payload)
       const state = await this.model.getState(request)
       let originalFilenames = (state || {}).originalFilenames || {}
+      let fileFields = this.getViewModel(formResult).components.filter(component => component.type === 'FileUploadField').map(component => component.model)
 
       // TODO:- Refactor this into a validation method
       if (hasFilesizeError) {
-        let fileFields = this.getViewModel(formResult).components.filter(component => component.type === 'FileUploadField').map(component => component.model)
         let reformattedErrors = fileFields.map(field => {
           return {
             path: field.name, href: `#${field.name}`, name: field.name, text: "The file you uploaded was too big"
@@ -220,6 +221,17 @@ class Page {
 
         formResult.errors = Object.is(formResult.errors, null) ? { titleText: 'Fix the following errors' } : formResult.errors
         formResult.errors.errorList = reformattedErrors
+      }
+
+      if (preHandlerErrors) {
+        let reformattedErrors = preHandlerErrors.map(error => {
+          let reformatted = error
+          let fieldMeta = fileFields.find(field => field.id === error.name)
+          reformatted.text = reformatted.text.replace(/%s/, fieldMeta ? fieldMeta.label.text.trim() : 'the file')
+          return reformatted
+        })
+        formResult.errors = Object.is(formResult.errors, null) ? { titleText: 'Fix the following errors' } : formResult.errors
+        formResult.errors.errorList = formResult.errors.errorList ? [...formResult.errors.errorList, ...reformattedErrors] : reformattedErrors
       }
 
       if (originalFilenames) {
