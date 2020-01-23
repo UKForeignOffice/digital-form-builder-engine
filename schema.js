@@ -82,7 +82,7 @@ const schema = joi.object().required().keys({
   fees: joi.array().items(feeSchema).optional(),
   metadata: joi.object({ a: joi.any() }).unknown().optional(),
   notify: notifySchema,
-  declaration: joi.string().optional().unknown().allow('')
+  declaration: joi.string().allow('').optional()
 })
 
 module.exports = schema
