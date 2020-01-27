@@ -169,8 +169,15 @@ class Page {
   makeGetRouteHandler (getState) {
     return async (request, h) => {
       let lang = this.langFromRequest(request)
-      const state = await getState(request)
+      const state = await this.model.getState(request)
       const formData = this.getFormDataFromState(state)
+      let progress = state.progress || []
+      const currentPath = `/${this.model.basePath}${this.path}`
+
+      if (progress.length === 0 && this.path !== `${this.model.def.startPage}`) {
+        return h.redirect(`/${this.model.basePath}${this.model.def.startPage}`)
+      }
+
       formData.lang = lang
       let { originalFilenames } = state
       if (originalFilenames) {
@@ -197,7 +204,15 @@ class Page {
         return evaluatedComponent
       })
 
-
+      if ('back' in request.query) {
+        progress.pop()
+      } else {
+        if (!progress || progress[progress.length - 1] !== `${currentPath}?back`) {
+          progress.push(`${currentPath}?back`)
+        }
+      }
+      await this.model.mergeState(request, { progress })
+      viewModel.backLink = progress[progress.length - 2]
       return h.view(this.viewName, viewModel)
     }
   }
@@ -216,8 +231,9 @@ class Page {
       if (hasFilesizeError) {
         let reformattedErrors = fileFields.map(field => {
           return {
-            path: field.name, href: `#${field.name}`, name: field.name, text: "The file you uploaded was too big"
-          }})
+            path: field.name, href: `#${field.name}`, name: field.name, text: 'The file you uploaded was too big'
+          }
+        })
 
         formResult.errors = Object.is(formResult.errors, null) ? { titleText: 'Fix the following errors' } : formResult.errors
         formResult.errors.errorList = reformattedErrors
@@ -252,9 +268,7 @@ class Page {
           return h.view(this.viewName, this.getViewModel(payload, stateResult.errors))
         } else {
           const update = this.getPartialMergeState(stateResult.value)
-
           const state = await mergeState(request, update)
-
           return this.proceed(request, h, state)
         }
       }
