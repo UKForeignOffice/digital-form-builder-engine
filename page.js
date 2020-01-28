@@ -173,9 +173,9 @@ class Page {
       const formData = this.getFormDataFromState(state)
       let progress = state.progress || []
       const currentPath = `/${this.model.basePath}${this.path}`
-
-      if (!this.model.options.previewMode && progress.length === 0 && this.path !== `${this.model.def.startPage}`) {
-        return h.redirect(`/${this.model.basePath}${this.model.def.startPage}`)
+      const startPage = this.model.def.startPage
+      if (!this.model.options.previewMode && progress.length === 0 && this.path !== `${startPage}`) {
+        return startPage.startsWith('http') ? h.redirect(startPage) : h.redirect(`/${this.model.basePath}${startPage}`)
       }
 
       formData.lang = lang
@@ -204,7 +204,7 @@ class Page {
         return evaluatedComponent
       })
 
-      if ('back' in request.query) {
+      if ('back' in request.query && currentPath === progress[progress.length - 1]) {
         progress.pop()
       } else {
         if (!progress || progress[progress.length - 1] !== `${currentPath}?back`) {
