@@ -11,12 +11,12 @@ class Page {
 
     // Properties
     this.def = def
+    this.name = def.name
     this.model = model
     this.pageDef = pageDef
     this.path = pageDef.path
     this.title = pageDef.title
     this.condition = pageDef.condition
-    this.name = pageDef.name
 
     // Resolve section
     const section = pageDef.section &&
