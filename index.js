@@ -13,6 +13,7 @@ module.exports = {
       const { modelOptions, configs, previewMode } = options
 
       let hasRootPage = false
+
       const forms = {}
       configs.forEach(config => {
         forms[config.id] = new Model(config.configuration, {...modelOptions, basePath: config.id})
