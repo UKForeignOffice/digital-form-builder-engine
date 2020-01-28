@@ -16,6 +16,7 @@ class Page {
     this.path = pageDef.path
     this.title = pageDef.title
     this.condition = pageDef.condition
+    this.name = pageDef.name
 
     // Resolve section
     const section = pageDef.section &&
@@ -65,7 +66,7 @@ class Page {
       showTitle = false
     }
 
-    return { page: this, pageTitle, sectionTitle, showTitle, components, errors }
+    return { page: this, name: this.name, pageTitle, sectionTitle, showTitle, components, errors }
   }
   get hasNext () {
     return Array.isArray(this.pageDef.next) && this.pageDef.next.length > 0
