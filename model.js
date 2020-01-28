@@ -37,6 +37,7 @@ class Model {
     this.lists = def.lists
     this.sections = def.sections
     this.options = options
+    this.name = def.name
 
     const { getState, mergeState, clearState } = options
     this.getState = getState
