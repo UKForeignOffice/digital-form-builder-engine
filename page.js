@@ -174,7 +174,7 @@ class Page {
       let progress = state.progress || []
       const currentPath = `/${this.model.basePath}${this.path}`
 
-      if (progress.length === 0 && this.path !== `${this.model.def.startPage}`) {
+      if (!this.model.options.previewMode && progress.length === 0 && this.path !== `${this.model.def.startPage}`) {
         return h.redirect(`/${this.model.basePath}${this.model.def.startPage}`)
       }
 
