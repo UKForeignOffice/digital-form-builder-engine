@@ -167,10 +167,11 @@ class Page {
     return request.yar.get('lang')
   }
 
-  makeGetRouteHandler (getState) {
+  makeGetRouteHandler () {
     return async (request, h) => {
+      const { cacheService } = request.services([])
       let lang = this.langFromRequest(request)
-      const state = await this.model.getState(request)
+      const state = await cacheService.getState(request)
       const formData = this.getFormDataFromState(state)
       let progress = state.progress || []
       const currentPath = `/${this.model.basePath}${this.path}`
@@ -212,19 +213,20 @@ class Page {
           progress.push(`${currentPath}?back`)
         }
       }
-      await this.model.mergeState(request, { progress })
+      await cacheService.mergeState(request, { progress })
       viewModel.backLink = progress[progress.length - 2]
       return h.view(this.viewName, viewModel)
     }
   }
 
-  makePostRouteHandler (mergeState) {
+  makePostRouteHandler () {
     return async (request, h) => {
+      const { cacheService } = request.services([])
       let hasFilesizeError = request.payload === null
       const preHandlerErrors = request.pre.errors
       const payload = request.payload || {}
       let formResult = this.validateForm(payload)
-      const state = await this.model.getState(request)
+      const state = await cacheService.getState(request)
       let originalFilenames = (state || {}).originalFilenames || {}
       let fileFields = this.getViewModel(formResult).components.filter(component => component.type === 'FileUploadField').map(component => component.model)
 
@@ -269,7 +271,7 @@ class Page {
           return h.view(this.viewName, this.getViewModel(payload, stateResult.errors))
         } else {
           const update = this.getPartialMergeState(stateResult.value)
-          const state = await mergeState(request, update)
+          const state = await cacheService.mergeState(request, update)
           return this.proceed(request, h, state)
         }
       }

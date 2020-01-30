@@ -39,11 +39,6 @@ class Model {
     this.options = options
     this.name = def.name
 
-    const { getState, mergeState, clearState } = options
-    this.getState = getState
-    this.mergeState = mergeState
-    this.clearState = clearState
-
     if (options.defaultPageController) {
       const defaultPageControllerPath = path.resolve(options.relativeTo, options.defaultPageController)
       this.DefaultPageController = require(defaultPageControllerPath)
