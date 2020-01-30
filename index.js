@@ -11,12 +11,16 @@ module.exports = {
     multiple: true,
     register: (server, options) => {
       const { modelOptions, configs, previewMode } = options
-
+      /*
+      * This plugin cannot be run outside of the context of the https://github.com/UKForeignOffice/digital-form-builder project.
+      * Ideally the engine encapsulates all the functionality required to run a form so work needs to be done to merge functionality
+      * from the builder project.
+      **/
       let hasRootPage = false
 
       const forms = {}
       configs.forEach(config => {
-        forms[config.id] = new Model(config.configuration, {...modelOptions, basePath: config.id})
+        forms[config.id] = new Model(config.configuration, { ...modelOptions, basePath: config.id })
       })
 
       if (previewMode) {
@@ -24,7 +28,7 @@ module.exports = {
           method: 'post',
           path: `/publish`,
           handler: (request, h) => {
-            const {id, configuration} = request.payload
+            const { id, configuration } = request.payload
             let model = new Model(configuration, modelOptions)
             forms[id] = model
             return h.response({}).code(204)
@@ -41,16 +45,16 @@ module.exports = {
           if (!model) {
             return h.response({}).code(404)
           }
-          let page = model.pages.find(page => page.path.replace(/^\//,'') === path)
+          let page = model.pages.find(page => page.path.replace(/^\//, '') === path)
           if (page) {
-            return page.makeGetRouteHandler(model.getState)(request, h)
+            return page.makeGetRouteHandler()(request, h)
           } else {
             return h.response({}).code(404)
           }
         }
       })
 
-      let handleFiles =  (request, h) => {
+      let handleFiles = (request, h) => {
         let { uploadService } = request.services([])
         return uploadService.handleUploadRequest(request, h)
       }
@@ -65,21 +69,21 @@ module.exports = {
             maxBytes: 5e+6,
             failAction: 'ignore'
           },
-          pre: [{method: handleFiles}],
+          pre: [{ method: handleFiles }],
           handler: (request, h) => {
             const { path, id } = request.params
             let model = forms[id]
             if (!model) {
               return h.response({}).code(404)
             }
-            let page = model.pages.find(page => page.path.replace(/^\//,'') === path)
+            let page = model.pages.find(page => page.path.replace(/^\//, '') === path)
             if (page) {
-              return page.makePostRouteHandler(model.mergeState)(request, h)
+              return page.makePostRouteHandler()(request, h)
             } else {
               return h.response({}).code(404)
             }
           }
-        },
+        }
       })
 
       /*
