@@ -1,16 +1,15 @@
 {
   "name": "digital-form-builder-engine",
-  "version": "0.1.5",
-  "description": "A hapi plugin providing the engine for digital form builder based applications",
+  "version": "1.0.0",
+  "description": "A hapi plugin providing the engine for (FCO) digital form builder based applications",
   "main": "index.js",
   "scripts": {
     "lint": "standard"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/DEFRA/digital-form-builder-engine"
+    "url": "https://github.com/UKForeignOffice/digital-form-builder-engine"
   },
-  "author": "Department for Environment, Food and Rural Affairs <https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs>.",
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "@hapi/joi": "16.1.5",
