@@ -1,7 +1,23 @@
-const boom = require('boom')
+const Boom = require('boom')
 const pkg = require('./package.json')
-const addressService = require('./address-service')
 const Model = require('./model')
+
+function normalisePath (path) {
+  return path
+    .replace(/^\//, '')
+    .replace(/\/$/, '')
+}
+
+function getStartPageRedirect (h, id, model) {
+  const startPage = normalisePath(model.def.startPage)
+  let startPageRedirect
+  if (startPage.startsWith('http')) {
+    startPageRedirect = h.redirect(startPage)
+  } else {
+    startPageRedirect = h.redirect(`/${id}/${startPage}`)
+  }
+  return startPageRedirect
+}
 
 module.exports = {
   plugin: {
@@ -16,8 +32,6 @@ module.exports = {
       * Ideally the engine encapsulates all the functionality required to run a form so work needs to be done to merge functionality
       * from the builder project.
       **/
-      let hasRootPage = false
-
       const forms = {}
       configs.forEach(config => {
         forms[config.id] = new Model(config.configuration, { ...modelOptions, basePath: config.id })
@@ -29,8 +43,7 @@ module.exports = {
           path: `/publish`,
           handler: (request, h) => {
             const { id, configuration } = request.payload
-            let model = new Model(configuration, modelOptions)
-            forms[id] = model
+            forms[id] = new Model(configuration, modelOptions)
             return h.response({}).code(204)
           }
         })
@@ -38,23 +51,37 @@ module.exports = {
 
       server.route({
         method: 'get',
-        path: `/{id}/{path*}`,
+        path: `/{id}`,
         handler: (request, h) => {
-          const { path, id } = request.params
-          let model = forms[id]
-          if (!model) {
-            return h.response({}).code(404)
+          const { id } = request.params
+          const model = forms[id]
+          if (model) {
+            return getStartPageRedirect(h, id, model)
           }
-          let page = model.pages.find(page => page.path.replace(/^\//, '') === path)
-          if (page) {
-            return page.makeGetRouteHandler()(request, h)
-          } else {
-            return h.response({}).code(404)
-          }
+          throw Boom.notFound('No form found for id')
         }
       })
 
-      let handleFiles = (request, h) => {
+      server.route({
+        method: 'get',
+        path: `/{id}/{path*}`,
+        handler: (request, h) => {
+          const { path, id } = request.params
+          const model = forms[id]
+          if (model) {
+            const page = model.pages.find(page => normalisePath(page.path) === normalisePath(path))
+            if (page) {
+              return page.makeGetRouteHandler()(request, h)
+            }
+            if (normalisePath(path) === '') {
+              return getStartPageRedirect(h, id, model)
+            }
+          }
+          throw Boom.notFound('No form or page found')
+        }
+      })
+
+      const handleFiles = (request, h) => {
         let { uploadService } = request.services([])
         return uploadService.handleUploadRequest(request, h)
       }
@@ -72,43 +99,17 @@ module.exports = {
           pre: [{ method: handleFiles }],
           handler: (request, h) => {
             const { path, id } = request.params
-            let model = forms[id]
-            if (!model) {
-              return h.response({}).code(404)
+            const model = forms[id]
+            if (model) {
+              const page = model.pages.find(page => page.path.replace(/^\//, '') === path)
+              if (page) {
+                return page.makePostRouteHandler()(request, h)
+              }
             }
-            let page = model.pages.find(page => page.path.replace(/^\//, '') === path)
-            if (page) {
-              return page.makePostRouteHandler()(request, h)
-            } else {
-              return h.response({}).code(404)
-            }
+            throw Boom.notFound('No form of path found')
           }
         }
       })
-
-      /*
-      NOTE:- this should be registered only once, probably not at engine level.
-            // FIND ADDRESS
-      server.route({
-        method: 'get',
-        path: '/__/find-address',
-        handler: async (request, h) => {
-          try {
-            const results = await addressService(ordnanceSurveyKey, request.query.postcode)
-
-            return results
-          } catch (err) {
-            return boom.badImplementation('Failed to find addresses', err)
-          }
-        },
-        options: {
-          validate: {
-            query: {
-              postcode: joi.string().required()
-            }
-          }
-        }
-      }) */
     }
   }
 }
