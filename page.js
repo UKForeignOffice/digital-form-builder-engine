@@ -68,9 +68,11 @@ class Page {
 
     return { page: this, name: this.name, pageTitle, sectionTitle, showTitle, components, errors }
   }
+
   get hasNext () {
     return Array.isArray(this.pageDef.next) && this.pageDef.next.length > 0
   }
+
   get next () {
     if (this.hasNext) {
       const nextPagePaths = this.pageDef.next.map(next => next.path)
@@ -206,13 +208,15 @@ class Page {
         return evaluatedComponent
       })
 
-      if ('back' in request.query && currentPath === progress[progress.length - 1]) {
-        progress.pop()
-      } else {
-        if (!progress || progress[progress.length - 1] !== `${currentPath}?back`) {
+      const lastVisited = progress[progress.length - 1]
+      if (!lastVisited.startsWith(currentPath)) {
+        if ('back' in request.query) {
+          progress.pop()
+        } else {
           progress.push(`${currentPath}?back`)
         }
       }
+
       await cacheService.mergeState(request, { progress })
       viewModel.backLink = progress[progress.length - 2]
       return h.view(this.viewName, viewModel)
@@ -317,15 +321,25 @@ class Page {
   }
 
   get viewName () { return 'index' }
+
   get defaultNextPath () { return `${this.model.basePath || ''}/summary` }
+
   get validationOptions () { return { abortEarly: false } }
+
   get conditionOptions () { return this.model.conditionOptions }
+
   get errorSummaryTitle () { return 'Fix the following errors' }
+
   get getRouteOptions () { return {} }
+
   get postRouteOptions () { return {} }
+
   get formSchema () { return this[FORM_SCHEMA] }
+
   set formSchema (value) { this[FORM_SCHEMA] = value }
+
   get stateSchema () { return this[STATE_SCHEMA] }
+
   set stateSchema (value) { this[STATE_SCHEMA] = value }
 }
 
