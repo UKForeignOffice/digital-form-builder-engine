@@ -209,7 +209,7 @@ class Page {
       })
 
       const lastVisited = progress[progress.length - 1]
-      if (!lastVisited.startsWith(currentPath)) {
+      if (!lastVisited || !lastVisited.startsWith(currentPath)) {
         if ('back' in request.query) {
           progress.pop()
         } else {
