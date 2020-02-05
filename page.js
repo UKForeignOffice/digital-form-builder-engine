@@ -191,7 +191,8 @@ class Page {
           }
         })
       }
-      let viewModel = this.getViewModel(formData)
+      const viewModel = this.getViewModel(formData)
+      viewModel.currentPath = currentPath
       viewModel.components = viewModel.components.filter(component => {
         if ((component.model.content || component.type === 'Details') && component.model.condition) {
           let condition = this.model.conditions[component.model.condition]
