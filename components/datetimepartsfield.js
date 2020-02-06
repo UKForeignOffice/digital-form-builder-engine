@@ -61,7 +61,7 @@ class DateTimePartsField extends FormComponent {
   getDisplayStringFromState (state) {
     const name = this.name
     const value = state[name]
-    return value instanceof Date
+    return value
       ? moment(value).format('D MMMM YYYY h:mma')
       : ''
   }

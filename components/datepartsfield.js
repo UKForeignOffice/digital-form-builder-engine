@@ -56,9 +56,7 @@ class DatePartsField extends FormComponent {
   getDisplayStringFromState (state) {
     const name = this.name
     const value = state[name]
-    return value instanceof Date
-      ? moment(value).format('D MMMM YYYY')
-      : ''
+    return value ? moment(value).format('D MMMM YYYY') : ''
   }
 
   getViewModel (formData, errors) {

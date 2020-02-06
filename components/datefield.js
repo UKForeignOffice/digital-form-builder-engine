@@ -23,16 +23,13 @@ class DateField extends FormComponent {
   getFormValueFromState (state) {
     const name = this.name
     const value = state[name]
-    return value instanceof Date
-      ? moment(value).format('YYYY-MM-DD')
-      : value
+    return value ? moment(value).format('YYYY-MM-DD') : value
   }
 
   getDisplayStringFromState (state) {
     const name = this.name
     const value = state[name]
-
-    return value instanceof Date
+    return value
       ? moment(value).format('D MMMM YYYY')
       : ''
   }
