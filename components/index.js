@@ -398,7 +398,7 @@ class ComponentCollection {
 nunjucks.configure([
   path.resolve(__dirname, '../views/components/'),
   path.resolve(__dirname, '../views/partials/'),
-  path.resolve(__dirname, '../node_modules/govuk-frontend/components/'),
+  path.resolve(__dirname, '../node_modules/govuk-frontend/govuk/components/'),
   path.resolve(__dirname, '../node_modules/hmpo-components/components/')
 ])
 module.exports = {

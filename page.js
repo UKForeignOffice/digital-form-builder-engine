@@ -192,7 +192,7 @@ class Page {
         })
       }
       const viewModel = this.getViewModel(formData)
-      viewModel.currentPath = currentPath
+      viewModel.currentPath = `${currentPath}${request.query.returnUrl ? '?returnUrl=' + request.query.returnUrl : ''}`
       viewModel.components = viewModel.components.filter(component => {
         if ((component.model.content || component.type === 'Details') && component.model.condition) {
           let condition = this.model.conditions[component.model.condition]
