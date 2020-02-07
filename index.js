@@ -90,6 +90,11 @@ module.exports = {
         method: 'post',
         path: `/{id}/{path*}`,
         config: {
+          plugins: {
+            'hapi-rate-limit': {
+              userPathLimit: 10
+            }
+          },
           payload: {
             output: 'stream',
             parse: true,
