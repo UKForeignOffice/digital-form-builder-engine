@@ -67,9 +67,25 @@ const metadataSchema = joi.object().keys({
 })
 
 const notifySchema = joi.object().keys({
+  apiKey: joi.string().allow('').optional(),
   templateId: joi.string(),
   personalisation: joi.array().items(joi.string()),
   emailField: joi.string()
+})
+
+const emailSchema  = joi.object().keys({
+  apiKey: joi.string().allow('').optional(),
+  templateId: joi.string(),
+  emailAddress: joi.string()
+})
+
+const webhookSchema = joi.object().keys({
+  url: joi.string()
+})
+
+const outputSchema = joi.object().keys({
+  type: joi.string().allow('confirmationEmail', 'email', 'webhook'),
+  outputConfiguration: joi.alternatives().try(notifySchema, emailSchema, webhookSchema)
 })
 
 const schema = joi.object().required().keys({
@@ -82,7 +98,8 @@ const schema = joi.object().required().keys({
   fees: joi.array().items(feeSchema).optional(),
   metadata: joi.object({ a: joi.any() }).unknown().optional(),
   notify: notifySchema,
-  declaration: joi.string().allow('').optional()
+  declaration: joi.string().allow('').optional(),
+  outputs: joi.array().items(outputSchema)
 })
 
 module.exports = schema
