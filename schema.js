@@ -73,7 +73,7 @@ const notifySchema = joi.object().keys({
   emailField: joi.string()
 })
 
-const emailSchema  = joi.object().keys({
+const emailSchema = joi.object().keys({
   apiKey: joi.string().allow('').optional(),
   templateId: joi.string(),
   emailAddress: joi.string()
@@ -84,6 +84,7 @@ const webhookSchema = joi.object().keys({
 })
 
 const outputSchema = joi.object().keys({
+  name: joi.string(),
   type: joi.string().allow('confirmationEmail', 'email', 'webhook'),
   outputConfiguration: joi.alternatives().try(notifySchema, emailSchema, webhookSchema)
 })
