@@ -74,8 +74,6 @@ const notifySchema = joi.object().keys({
 })
 
 const emailSchema = joi.object().keys({
-  apiKey: joi.string().allow('').optional(),
-  templateId: joi.string(),
   emailAddress: joi.string()
 })
 
@@ -98,7 +96,6 @@ const schema = joi.object().required().keys({
   lists: joi.array().items(listSchema).unique('name'),
   fees: joi.array().items(feeSchema).optional(),
   metadata: joi.object({ a: joi.any() }).unknown().optional(),
-  notify: notifySchema,
   declaration: joi.string().allow('').optional(),
   outputs: joi.array().items(outputSchema)
 })
