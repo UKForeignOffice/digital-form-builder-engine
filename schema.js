@@ -97,7 +97,8 @@ const schema = joi.object().required().keys({
   fees: joi.array().items(feeSchema).optional(),
   metadata: joi.object({ a: joi.any() }).unknown().optional(),
   declaration: joi.string().allow('').optional(),
-  outputs: joi.array().items(outputSchema)
+  outputs: joi.array().items(outputSchema),
+  payApiKey: joi.string().allow('').optional()
 })
 
 module.exports = schema
