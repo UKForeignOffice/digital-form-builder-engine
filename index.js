@@ -82,8 +82,20 @@ module.exports = {
       })
 
       const handleFiles = (request, h) => {
-        let { uploadService } = request.services([])
+        const { uploadService } = request.services([])
         return uploadService.handleUploadRequest(request, h)
+      }
+
+      const postHandler = async (request, h) => {
+        const { path, id } = request.params
+        const model = forms[id]
+        if (model) {
+          const page = model.pages.find(page => page.path.replace(/^\//, '') === path)
+          if (page) {
+            return page.makePostRouteHandler()(request, h)
+          }
+        }
+        throw Boom.notFound('No form of path found')
       }
 
       server.route({
@@ -99,20 +111,16 @@ module.exports = {
             output: 'stream',
             parse: true,
             maxBytes: 5e+6,
-            failAction: 'ignore'
+            failAction: async (request, h) => {
+              /**
+               * @code something happened when updating hapi.js versions (probably?).. failAction: 'ignore' still throws an error
+               * and h.continue doesn't end up hitting the handler.
+               */
+              return h.response(await postHandler(request, h)).takeover()
+            }
           },
           pre: [{ method: handleFiles }],
-          handler: (request, h) => {
-            const { path, id } = request.params
-            const model = forms[id]
-            if (model) {
-              const page = model.pages.find(page => page.path.replace(/^\//, '') === path)
-              if (page) {
-                return page.makePostRouteHandler()(request, h)
-              }
-            }
-            throw Boom.notFound('No form of path found')
-          }
+          handler: postHandler
         }
       })
     }

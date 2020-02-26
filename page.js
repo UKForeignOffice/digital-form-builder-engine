@@ -248,11 +248,17 @@ class Page {
       }
 
       if (preHandlerErrors) {
-        let reformattedErrors = preHandlerErrors.map(error => {
+        let reformattedErrors = []
+        preHandlerErrors.forEach(error => {
           let reformatted = error
           let fieldMeta = fileFields.find(field => field.id === error.name)
-          reformatted.text = reformatted.text.replace(/%s/, fieldMeta ? fieldMeta.label.text.trim() : 'the file')
-          return reformatted
+          if (typeof reformatted.text === 'string') {
+            /**
+             * @code if it's not a string it's probably going to be a stack trace.. don't want to show that to the user. A problem for another day.
+             */
+            reformatted.text = reformatted.text.replace(/%s/, fieldMeta ? fieldMeta.label.text.trim() : 'the file')
+            reformattedErrors.push(reformattedErrors)
+          }
         })
         formResult.errors = Object.is(formResult.errors, null) ? { titleText: 'Fix the following errors' } : formResult.errors
         formResult.errors.errorList = formResult.errors.errorList ? [...formResult.errors.errorList, ...reformattedErrors] : reformattedErrors
