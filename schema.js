@@ -57,7 +57,7 @@ const listSchema = joi.object().keys({
 const feeSchema = joi.object().keys({
   description: joi.string().required(),
   amount: joi.number().required(),
-  condition: joi.string().required()
+  condition: joi.string().optional()
 })
 
 const metadataSchema = joi.object().keys({
