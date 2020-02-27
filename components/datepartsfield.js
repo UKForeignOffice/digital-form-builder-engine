@@ -72,6 +72,10 @@ class DatePartsField extends FormComponent {
     // Remove the labels and apply error classes to the items
     componentViewModels.forEach(componentViewModel => {
       componentViewModel.label = componentViewModel.label.text.replace(' (optional)', '')
+      componentViewModel.attributes = {
+        step: 1
+      }
+      componentViewModel.pattern = '\\d*'
       if (componentViewModel.errorMessage) {
         componentViewModel.classes += ' govuk-input--error'
       }
