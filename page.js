@@ -247,6 +247,9 @@ class Page {
         formResult.errors.errorList = reformattedErrors
       }
 
+      /**
+       * @code other file related errors.. assuming file fields will be on their own page. This will replace all other errors from the page if not..
+       */
       if (preHandlerErrors) {
         let reformattedErrors = []
         preHandlerErrors.forEach(error => {
@@ -257,20 +260,19 @@ class Page {
              * @code if it's not a string it's probably going to be a stack trace.. don't want to show that to the user. A problem for another day.
              */
             reformatted.text = reformatted.text.replace(/%s/, fieldMeta ? fieldMeta.label.text.trim() : 'the file')
-            reformattedErrors.push(reformattedErrors)
+            reformattedErrors.push(reformatted)
           }
         })
+
         formResult.errors = Object.is(formResult.errors, null) ? { titleText: 'Fix the following errors' } : formResult.errors
-        formResult.errors.errorList = formResult.errors.errorList ? [...formResult.errors.errorList, ...reformattedErrors] : reformattedErrors
+        formResult.errors.errorList = reformattedErrors
       }
 
-      if (originalFilenames) {
-        Object.entries(payload).forEach(([key, value]) => {
-          if (value && value === (originalFilenames[key] || {}).location) {
-            payload[key] = originalFilenames[key].originalFilename
-          }
-        })
-      }
+      Object.entries(payload).forEach(([key, value]) => {
+        if (value && value === (originalFilenames[key] || {}).location) {
+          payload[key] = originalFilenames[key].originalFilename
+        }
+      })
 
       if (formResult.errors) {
         return h.view(this.viewName, this.getViewModel(payload, formResult.errors))

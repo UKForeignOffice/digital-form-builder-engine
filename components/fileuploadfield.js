@@ -10,9 +10,15 @@ class FileUploadField extends FormComponent {
     return helpers.getStateSchemaKeys(this.name, 'string', this)
   }
 
+  get attributes () {
+    return {
+      accept: 'image/jpeg,image/gif,image/png,application/pdf'
+    }
+  }
+
   getViewModel (formData, errors) {
     const { name, items } = this
-    const viewModel = super.getViewModel(formData, errors)
+    const viewModel = { ...super.getViewModel(formData, errors), attributes: this.attributes }
     return viewModel
   }
 
