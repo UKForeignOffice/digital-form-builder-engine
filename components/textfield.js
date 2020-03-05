@@ -19,7 +19,6 @@ class TextField extends FormComponent {
         maxlength: schema.max
       }
     }
-
     return viewModel
   }
 }
