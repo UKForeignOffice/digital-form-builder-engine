@@ -2,6 +2,15 @@ const { FormComponent } = require('.')
 const helpers = require('./helpers')
 
 class TextField extends FormComponent {
+  constructor (def, model) {
+    super(def, model)
+    const { options } = this
+
+    if (!options.classes) {
+      options.classes = 'govuk-input--width-20'
+    }
+  }
+
   getFormSchemaKeys () {
     return helpers.getFormSchemaKeys(this.name, 'string', this)
   }

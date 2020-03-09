@@ -30,6 +30,7 @@ class TelephoneNumberField extends FormComponent {
     }
 
     viewModel.type = 'tel'
+    viewModel.pattern = '[0-9\\s\\+\\(\\)]*'
 
     return viewModel
   }
