@@ -1,7 +1,7 @@
 const { FormComponent } = require('.')
 const helpers = require('./helpers')
 
-const PATTERN = '^[0-9\\s\\+\\(\\)]*}$'
+const PATTERN = '^[0-9\\s\\+\\(\\)]*$'
 
 class TelephoneNumberField extends FormComponent {
   constructor (def, model) {
@@ -24,8 +24,7 @@ class TelephoneNumberField extends FormComponent {
   }
 
   getViewModel (formData, errors) {
-    const { options } = this
-    const schema = this.schema
+    const { schema } = this
     const viewModel = super.getViewModel(formData, errors)
 
     if (typeof schema.max === 'number') {

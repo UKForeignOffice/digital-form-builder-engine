@@ -4,11 +4,13 @@ const helpers = require('./helpers')
 class TextField extends FormComponent {
   constructor (def, model) {
     super(def, model)
-    const { options } = this
+    const { options, schema } = this
 
     if (!options.classes) {
       options.classes = 'govuk-input--width-20'
     }
+
+    schema.regex = '^[^"\\/#-;]*$'
   }
 
   getFormSchemaKeys () {
