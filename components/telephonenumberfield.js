@@ -1,14 +1,18 @@
 const { FormComponent } = require('.')
 const helpers = require('./helpers')
 
+const PATTERN = '^[0-9\\s\\+\\(\\)]*}$'
+
 class TelephoneNumberField extends FormComponent {
   constructor (def, model) {
     super(def, model)
-    const { options } = this
+    const { options, schema } = this
 
     if (!options.classes) {
       options.classes = 'govuk-input--width-10'
     }
+
+    schema.regex = PATTERN
   }
 
   getFormSchemaKeys () {
@@ -20,6 +24,7 @@ class TelephoneNumberField extends FormComponent {
   }
 
   getViewModel (formData, errors) {
+    const { options } = this
     const schema = this.schema
     const viewModel = super.getViewModel(formData, errors)
 
@@ -30,7 +35,6 @@ class TelephoneNumberField extends FormComponent {
     }
 
     viewModel.type = 'tel'
-    viewModel.pattern = '[0-9\\s\\+\\(\\)]*'
 
     return viewModel
   }

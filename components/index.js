@@ -21,6 +21,25 @@ class FormComponent extends Component {
     super(def, model)
     this.isFormComponent = true
     this.__lang = 'en' // set default language
+
+    const { schema } = this
+
+    schema.error = errors => {
+      errors.forEach(err => {
+        console.log('err', err)
+        switch (err.type) {
+          case 'any.empty':
+            err.message = `${err.context.label} is required`
+            break
+          case 'string.regex.base':
+            err.message = `Enter a valid ${err.context.label.toLowerCase()}`
+            break
+          default:
+            break
+        }
+      })
+      return errors
+    }
   }
 
   get lang () {
