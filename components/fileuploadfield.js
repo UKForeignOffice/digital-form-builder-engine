@@ -17,8 +17,13 @@ class FileUploadField extends FormComponent {
   }
 
   getViewModel (formData, errors) {
-    const { name, items } = this
+    const { options } = this
     const viewModel = { ...super.getViewModel(formData, errors), attributes: this.attributes }
+
+    if (options.multiple) {
+      viewModel.attributes.multiple = 'multiple'
+    }
+
     return viewModel
   }
 
