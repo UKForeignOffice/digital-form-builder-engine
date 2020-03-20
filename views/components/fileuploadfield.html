@@ -2,8 +2,6 @@
 {% macro FileUploadField(component) %}
   {{ govukFileUpload(component.model) }}
   {% if component.model.value %}
-      <p class="govuk-body">
-        Previously uploaded file: <span class="govuk-!-font-weight-bold">{{component.model.value}}</span>
-      </p>
+      <p class="govuk-body">You have already provided this file.</p>
   {% endif %}
 {% endmacro %}
