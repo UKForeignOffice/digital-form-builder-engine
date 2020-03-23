@@ -45,8 +45,8 @@ class UkAddressField extends FormComponent {
     const name = this.name
     const value = state[name]
     return {
-      [`${name}__addressLine1`]: value && value.premises,
-      [`${name}__addressLine2`]: value && value.street,
+      [`${name}__addressLine1`]: value && value.addressLine1,
+      [`${name}__addressLine2`]: value && value.addressLine2,
       [`${name}__town`]: value && value.town,
       [`${name}__postcode`]: value && value.postcode
     }
@@ -56,7 +56,7 @@ class UkAddressField extends FormComponent {
     const name = this.name
     return payload[`${name}__addressLine1`] ? {
       addressLine1: payload[`${name}__addressLine1`],
-      addressLine2: payload[`${name}__addressLine1`],
+      addressLine2: payload[`${name}__addressLine2`],
       town: payload[`${name}__town`],
       postcode: payload[`${name}__postcode`]
     } : null
