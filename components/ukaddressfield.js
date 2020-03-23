@@ -9,10 +9,9 @@ class UkAddressField extends FormComponent {
     const stateSchema = helpers.buildStateSchema('date', this)
 
     const childrenList = [
-      { type: 'TextField', name: `premises`, title: 'Premises', schema: { max: 100 }, options: { required: options.required } },
-      { type: 'TextField', name: `street`, title: 'Street', schema: { max: 100, allow: '' }, options: { required: false } },
-      { type: 'TextField', name: `locality`, title: 'Locality', schema: { max: 100, allow: '' }, options: { required: false } },
-      { type: 'TextField', name: `town`, title: 'Town', schema: { max: 100 }, options: { required: options.required } },
+      { type: 'TextField', name: `addressLine1`, title: 'Address line 1', schema: { max: 100 }, options: { required: options.required } },
+      { type: 'TextField', name: `addressLine2`, title: 'Address line 2', schema: { max: 100, allow: '' }, options: { required: false } },
+      { type: 'TextField', name: `town`, title: 'Town or city', schema: { max: 100 }, options: { required: options.required } },
       { type: 'TextField', name: `postcode`, title: 'Postcode', schema: { max: 10 }, options: { required: options.required } }
     ]
 
@@ -46,25 +45,18 @@ class UkAddressField extends FormComponent {
     const name = this.name
     const value = state[name]
     return {
-      [`${name}__premises`]: value && value.premises,
-      [`${name}__street`]: value && value.street,
-      [`${name}__locality`]: value && value.locality,
+      [`${name}__addressLine1`]: value && value.premises,
+      [`${name}__addressLine2`]: value && value.street,
       [`${name}__town`]: value && value.town,
       [`${name}__postcode`]: value && value.postcode
     }
   }
 
   getStateValueFromValidForm (payload) {
-    // Use `moment` to parse the date as
-    // opposed to the Date constructor.
-    // `moment` will check that the individual date
-    // parts together constitute a valid date.
-    // E.g. 31 November is not a valid date
     const name = this.name
-    return payload[`${name}__premises`] ? {
-      premises: payload[`${name}__premises`],
-      street: payload[`${name}__street`],
-      locality: payload[`${name}__locality`],
+    return payload[`${name}__addressLine1`] ? {
+      addressLine1: payload[`${name}__addressLine1`],
+      addressLine2: payload[`${name}__addressLine1`],
       town: payload[`${name}__town`],
       postcode: payload[`${name}__postcode`]
     } : null
@@ -75,9 +67,8 @@ class UkAddressField extends FormComponent {
     const value = state[name]
 
     return value ? [
-      value.premises,
-      value.street,
-      value.locality,
+      value.addressLine1,
+      value.addressLine2,
       value.town,
       value.postcode
     ].filter(p => {
