@@ -2,6 +2,9 @@ const Boom = require('boom')
 const pkg = require('./package.json')
 const Model = require('./model')
 
+// 70mb
+const UPLOAD_LIMIT = 70 * 1024 * 1024
+
 function normalisePath (path) {
   return path
     .replace(/^\//, '')
@@ -110,7 +113,7 @@ module.exports = {
           payload: {
             output: 'stream',
             parse: true,
-            maxBytes: 5e+6,
+            maxBytes: UPLOAD_LIMIT,
             failAction: async (request, h) => {
               /**
                * @code something happened when updating hapi.js versions (probably?).. failAction: 'ignore' still throws an error

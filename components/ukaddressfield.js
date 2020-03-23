@@ -95,6 +95,13 @@ class UkAddressField extends FormComponent {
       children: this.formChildren.getViewModel(formData, errors)
     })
 
+    const { disableLookup } = this.options
+    if (disableLookup !== undefined) {
+      viewModel.disableLookup = disableLookup
+    } else {
+      viewModel.disableLookup = true
+    }
+
     return viewModel
   }
 }
