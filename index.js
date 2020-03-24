@@ -54,6 +54,23 @@ module.exports = {
 
       server.route({
         method: 'get',
+        path: `/`,
+        handler: (request, h) => {
+          const keys = Object.keys(forms)
+          let id = '';
+          if (keys.length === 1) {
+            id = keys[0]
+          }
+          const model = forms[id]
+          if (model) {
+            return getStartPageRedirect(h, id, model)
+          }
+          throw Boom.notFound('No default form found')
+        }
+      })
+
+      server.route({
+        method: 'get',
         path: `/{id}`,
         handler: (request, h) => {
           const { id } = request.params
