@@ -82,10 +82,22 @@ const webhookSchema = joi.object().keys({
   url: joi.string()
 })
 
+const sheetItemSchema = joi.object().keys({
+  name: joi.string(),
+  id: joi.string()
+})
+
+const sheetsSchema = joi.object().keys({
+  clientId: joi.string(),
+  clientSecret: joi.string(),
+  callbackURL: joi.string(),
+  sheets: joi.array().items(sheetItemSchema)
+})
+
 const outputSchema = joi.object().keys({
   name: joi.string(),
   type: joi.string().allow('confirmationEmail', 'email', 'webhook'),
-  outputConfiguration: joi.alternatives().try(notifySchema, emailSchema, webhookSchema)
+  outputConfiguration: joi.alternatives().try(notifySchema, emailSchema, webhookSchema, sheetsSchema)
 })
 
 const schema = joi.object().required().keys({
