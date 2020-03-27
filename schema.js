@@ -94,7 +94,8 @@ const sheetsSchema = joi.object().keys({
   }),
   project_id: joi.string(),
   scopes: joi.array().items(joi.string()),
-  sheets: joi.array().items(sheetItemSchema)
+  sheets: joi.array().items(sheetItemSchema),
+  spreadsheetIdField: joi.string()
 })
 const outputSchema = joi.object().keys({
   name: joi.string(),
