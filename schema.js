@@ -88,12 +88,14 @@ const sheetItemSchema = joi.object().keys({
 })
 
 const sheetsSchema = joi.object().keys({
-  clientId: joi.string(),
-  clientSecret: joi.string(),
-  callbackURL: joi.string(),
+  credentials: joi.object().keys({
+    private_key: joi.string(),
+    client_email: joi.string()
+  }),
+  project_id: joi.string(),
+  scopes: joi.array().items(joi.string()),
   sheets: joi.array().items(sheetItemSchema)
 })
-
 const outputSchema = joi.object().keys({
   name: joi.string(),
   type: joi.string().allow('confirmationEmail', 'email', 'webhook'),
