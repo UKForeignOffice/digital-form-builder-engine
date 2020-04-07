@@ -46,7 +46,7 @@ module.exports = {
           path: `/publish`,
           handler: (request, h) => {
             const { id, configuration } = request.payload
-            forms[id] = new Model(configuration, modelOptions)
+            forms[id] = new Model(configuration, { ...modelOptions, basePath: id })
             return h.response({}).code(204)
           }
         })
