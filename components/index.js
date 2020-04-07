@@ -354,8 +354,9 @@ class ComponentCollection {
     this.formItems = formItems
     this.formSchema = joi
       .object()
-      .keys(this.getFormSchemaKeys())
-      .required()
+      .keys(this.getFormSchemaKeys()).required()
+      .keys({ crumb: joi.string() })
+
     this.stateSchema = joi
       .object()
       .keys(this.getStateSchemaKeys())
