@@ -50,6 +50,20 @@ module.exports = {
             return h.response({}).code(204)
           }
         })
+        
+        server.route({
+          method: 'get',
+          path: `/published/{id}`,
+          handler: (request, h) => {
+            const { id } = request.params
+            if(forms[id]) {
+              const values = forms[id].def
+              return h.response(JSON.stringify({id, values})).code(200)
+            } else {
+              return h.response({}).code(204)
+            }
+          }
+        })
       }
 
       server.route({
