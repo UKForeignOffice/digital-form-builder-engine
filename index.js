@@ -135,7 +135,7 @@ module.exports = {
       server.route({
         method: 'post',
         path: `/{id}/{path*}`,
-        config: {
+        options: {
           plugins: {
             'hapi-rate-limit': {
               userPathLimit: 10
@@ -144,6 +144,7 @@ module.exports = {
           payload: {
             output: 'stream',
             parse: true,
+            multipart: true,
             maxBytes: UPLOAD_LIMIT,
             failAction: async (request, h) => {
               /**
