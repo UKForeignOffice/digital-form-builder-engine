@@ -31,6 +31,9 @@ class FormComponent extends Component {
           case 'any.empty':
             err.message = `${err.context.label} is required`
             break
+          case 'string.base':
+            err.message = `${err.context.label} is required`
+            break
           case 'string.regex.base':
             err.message = `Enter a valid ${err.context.label.toLowerCase()}`
             break
