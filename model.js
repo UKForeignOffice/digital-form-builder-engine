@@ -16,6 +16,7 @@ class Model {
     // by joi so as not to change the source data.
     def = JSON.parse(JSON.stringify(result.value))
 
+
     // Add default lists
     def.lists.push({
       name: '__yesNo',
@@ -38,6 +39,7 @@ class Model {
     this.sections = def.sections
     this.options = options
     this.name = def.name
+    this.values = result.value
 
     if (options.defaultPageController) {
       const defaultPageControllerPath = path.resolve(options.relativeTo, options.defaultPageController)

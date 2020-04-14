@@ -43,7 +43,7 @@ module.exports = {
       if (previewMode) {
         server.route({
           method: 'post',
-          path: `/publish`,
+          path: '/publish',
           handler: (request, h) => {
             const { id, configuration } = request.payload
             forms[id] = new Model(configuration, { ...modelOptions, basePath: id })
@@ -53,12 +53,11 @@ module.exports = {
 
         server.route({
           method: 'get',
-          path: `/published/{id}`,
+          path: '/published/{id}',
           handler: (request, h) => {
             const { id } = request.params
             if (forms[id]) {
-              const values = JSON.parse(JSON.stringify(forms[id].def))
-              values.lists = values.lists.filter(list => !list.name.startsWith('__'))
+              const { values } = forms[id]
               return h.response(JSON.stringify({ id, values })).code(200)
             } else {
               return h.response({}).code(204)
