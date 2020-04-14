@@ -1,6 +1,3 @@
 {% from "./components.html" import componentList with context %}
 
-{% for component in components %}
-  {% import component.type.toLowerCase() + ".html" as view with context%}
-  {{ view[component.type](component) }}
-{% endfor %}
+{{ componentList(components) }}

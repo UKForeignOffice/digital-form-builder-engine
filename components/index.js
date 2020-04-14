@@ -424,6 +424,7 @@ nunjucks.configure([
   path.resolve(__dirname, '../node_modules/govuk-frontend/govuk/components/'),
   path.resolve(__dirname, '../node_modules/hmpo-components/components/')
 ])
+
 module.exports = {
   Component,
   FormComponent,
