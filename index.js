@@ -50,15 +50,16 @@ module.exports = {
             return h.response({}).code(204)
           }
         })
-        
+
         server.route({
           method: 'get',
           path: `/published/{id}`,
           handler: (request, h) => {
             const { id } = request.params
-            if(forms[id]) {
-              const values = forms[id].def
-              return h.response(JSON.stringify({id, values})).code(200)
+            if (forms[id]) {
+              const values = JSON.parse(JSON.stringify(forms[id].def))
+              values.lists = values.lists.filter(list => !list.name.startsWith('__'))
+              return h.response(JSON.stringify({ id, values })).code(200)
             } else {
               return h.response({}).code(204)
             }
@@ -71,7 +72,7 @@ module.exports = {
         path: `/`,
         handler: (request, h) => {
           const keys = Object.keys(forms)
-          let id = '';
+          let id = ''
           if (keys.length === 1) {
             id = keys[0]
           }
