@@ -66,7 +66,7 @@ class Page {
       showTitle = false
     }
 
-    return { page: this, name: this.name, pageTitle, sectionTitle, showTitle, components, errors }
+    return { page: this, name: this.name, pageTitle, sectionTitle, showTitle, components, errors, isStartPage: false }
   }
 
   get hasNext () {
