@@ -172,10 +172,10 @@ class Page {
   makeGetRouteHandler () {
     return async (request, h) => {
       const { cacheService } = request.services([])
-      let lang = this.langFromRequest(request)
+      const lang = this.langFromRequest(request)
       const state = await cacheService.getState(request)
       const formData = this.getFormDataFromState(state)
-      let progress = state.progress || []
+      const progress = state.progress || []
       const currentPath = `/${this.model.basePath}${this.path}`
       const startPage = this.model.def.startPage
       if (!this.model.options.previewMode && progress.length === 0 && this.path !== `${startPage}`) {
@@ -183,7 +183,7 @@ class Page {
       }
 
       formData.lang = lang
-      let { originalFilenames } = state
+      const { originalFilenames } = state
       if (originalFilenames) {
         Object.entries(formData).forEach(([key, value]) => {
           if (value && value === (originalFilenames[key] || {}).location) {
@@ -192,17 +192,18 @@ class Page {
         })
       }
       const viewModel = this.getViewModel(formData)
+      viewModel.startPage = startPage.startsWith('http') ? h.redirect(startPage) : h.redirect(`/${this.model.basePath}${startPage}`)
       viewModel.currentPath = `${currentPath}${request.query.returnUrl ? '?returnUrl=' + request.query.returnUrl : ''}`
       viewModel.components = viewModel.components.filter(component => {
         if ((component.model.content || component.type === 'Details') && component.model.condition) {
-          let condition = this.model.conditions[component.model.condition]
+          const condition = this.model.conditions[component.model.condition]
           return condition.fn(state)
         }
         return true
       })
       viewModel.components = viewModel.components.map(component => {
-        let evaluatedComponent = component
-        let content = evaluatedComponent.model.content
+        const evaluatedComponent = component
+        const content = evaluatedComponent.model.content
         if (content instanceof Array) {
           evaluatedComponent.model.content = content.filter(item => item.condition ? this.model.conditions[item.condition].fn(state) : true)
         }
