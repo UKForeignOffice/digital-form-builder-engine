@@ -37,6 +37,12 @@ class FormComponent extends Component {
           case 'string.regex.base':
             err.message = `Enter a valid ${err.context.label.toLowerCase()}`
             break
+          case 'date.min':
+            err.message = `${err.context.label} can be no earlier than ${err.context.limit.getDate()}/${err.context.limit.getMonth() + 1}/${err.context.limit.getFullYear()}`
+            break
+          case 'date.max':
+            err.message = `${err.context.label} can be no later than ${err.context.limit.getDate()}/${err.context.limit.getMonth() + 1}/${err.context.limit.getFullYear()}`
+            break
           default:
             break
         }

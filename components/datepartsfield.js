@@ -23,7 +23,24 @@ class DatePartsField extends FormComponent {
   }
 
   getStateSchemaKeys () {
-    return { [this.name]: this.stateSchema }
+    const { options } = this
+    const { maxDaysInPast, maxDaysInFuture } = options
+
+    let schema = this.stateSchema
+
+    if (maxDaysInPast !== undefined) {
+      const d = new Date()
+      d.setDate(d.getDate() - maxDaysInPast)
+      const min = `${d.getMonth() + 1}-${d.getDate()}-${d.getFullYear()}`
+      schema = schema.min(min)
+    }
+    if (maxDaysInFuture !== undefined) {
+      const d = new Date()
+      d.setDate(d.getDate() + maxDaysInFuture)
+      const max = `${d.getMonth() + 1}-${d.getDate()}-${d.getFullYear()}`
+      schema = schema.max(max)
+    }
+    return { [this.name]: schema }
   }
 
   getFormDataFromState (state) {
