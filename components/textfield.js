@@ -10,7 +10,9 @@ class TextField extends FormComponent {
       options.classes = 'govuk-input--width-20'
     }
 
-    schema.regex = '^[^"\\/\\#;]*$'
+    if (!schema.regex) {
+      schema.regex = '^[^"\\/\\#;]*$'
+    }
   }
 
   getFormSchemaKeys () {

@@ -26,7 +26,10 @@ class FormComponent extends Component {
 
     schema.error = errors => {
       errors.forEach(err => {
-        console.log('err', err)
+        const { limit } = err.context
+        const today = new Date()
+        const limitIsToday = limit.getDate() === today.getDate() && limit.getMonth() === today.getMonth() && limit.getFullYear() === today.getFullYear()
+
         switch (err.type) {
           case 'any.empty':
             err.message = `${err.context.label} is required`
@@ -38,10 +41,18 @@ class FormComponent extends Component {
             err.message = `Enter a valid ${err.context.label.toLowerCase()}`
             break
           case 'date.min':
-            err.message = `${err.context.label} can be no earlier than ${err.context.limit.getDate()}/${err.context.limit.getMonth() + 1}/${err.context.limit.getFullYear()}`
+            if (limitIsToday) {
+              err.message = `${err.context.label} must be in the future`
+            } else {
+              err.message = `${err.context.label} can be no earlier than ${limit.getDate()}/${limit.getMonth() + 1}/${limit.getFullYear()}`
+            }
             break
           case 'date.max':
-            err.message = `${err.context.label} can be no later than ${err.context.limit.getDate()}/${err.context.limit.getMonth() + 1}/${err.context.limit.getFullYear()}`
+            if (limitIsToday) {
+              err.message = `${err.context.label} must be in the past`
+            } else {
+              err.message = `${err.context.label} can be no later than ${limit.getDate()}/${limit.getMonth() + 1}/${limit.getFullYear()}`
+            }
             break
           default:
             break

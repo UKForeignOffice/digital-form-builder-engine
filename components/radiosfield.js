@@ -22,7 +22,7 @@ class RadiosField extends ConditionalFormComponent {
     const { name, items } = this
     const value = state[name]
     const item = items.find(item => item.value === value)
-    return item ? item.text : ''
+    return item ? item.text : value
   }
 
   getViewModel (formData, errors) {
