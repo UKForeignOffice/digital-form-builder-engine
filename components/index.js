@@ -28,14 +28,23 @@ class FormComponent extends Component {
       errors.forEach(err => {
         const { limit } = err.context
         const today = new Date()
-        const limitIsToday = limit && limit.getDate && limit.getDate() === today.getDate() && limit.getMonth() === today.getMonth() && limit.getFullYear() === today.getFullYear()
+        const limitIsToday = limit && limit.getDate() === today.getDate() && limit.getMonth() === today.getMonth() && limit.getFullYear() === today.getFullYear()
 
         switch (err.type) {
           case 'any.empty':
             err.message = `${err.context.label} is required`
             break
+          case 'any.required':
+            err.message = `${err.context.label} is required`
+            break
+          case 'number.base':
+            err.message = `${err.context.label} must be a number`
+            break
           case 'string.base':
             err.message = `${err.context.label} is required`
+            break
+          case 'string.email':
+            err.message = `${err.context.label} must be a valid email address`
             break
           case 'string.regex.base':
             err.message = `Enter a valid ${err.context.label.toLowerCase()}`
