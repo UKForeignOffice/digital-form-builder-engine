@@ -28,7 +28,7 @@ class FormComponent extends Component {
       errors.forEach(err => {
         const { limit } = err.context
         const today = new Date()
-        const limitIsToday = limit.getDate() === today.getDate() && limit.getMonth() === today.getMonth() && limit.getFullYear() === today.getFullYear()
+        const limitIsToday = limit && limit.getDate() === today.getDate() && limit.getMonth() === today.getMonth() && limit.getFullYear() === today.getFullYear()
 
         switch (err.type) {
           case 'any.empty':
