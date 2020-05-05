@@ -445,12 +445,13 @@ class ComponentCollection {
 
 // Configure Nunjucks to allow rendering of content that is revealed conditionally.
 nunjucks.configure([
-  path.resolve(__dirname, '../views/components/'),
-  path.resolve(__dirname, '../views/partials/'),
-  path.resolve(__dirname, '../node_modules/govuk-frontend/govuk/components/'),
-  path.resolve(__dirname, '../node_modules/hmpo-components/components/')
+  'node_modules/govuk-frontend/govuk/',
+  'node_modules/govuk-frontend/govuk/components/',
+  'node_modules/digital-form-builder-engine/views',
+  'node_modules/digital-form-builder-engine/views/partials',
+  'node_modules/digital-form-builder-designer/views',
+  'node_modules/hmpo-components/components'
 ])
-
 module.exports = {
   Component,
   FormComponent,
