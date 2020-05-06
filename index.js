@@ -2,8 +2,8 @@ const Boom = require('boom')
 const pkg = require('./package.json')
 const Model = require('./model')
 
-// 70mb
-const UPLOAD_LIMIT = 70 * 1024 * 1024
+// 5mb
+const UPLOAD_LIMIT = 5 * 1024 * 1024
 
 function normalisePath (path) {
   return path
