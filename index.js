@@ -147,11 +147,10 @@ module.exports = {
             multipart: true,
             maxBytes: UPLOAD_LIMIT,
             failAction: async (request, h) => {
-              /**
-               * @code something happened when updating hapi.js versions (probably?).. failAction: 'ignore' still throws an error
-               * and h.continue doesn't end up hitting the handler.
-               */
-              return h.response(await postHandler(request, h)).takeover()
+              if (request.server.plugins.crumb && request.server.plugins.crumb.generate) {
+                request.server.plugins.crumb.generate(request, h)
+              }
+              return h.continue
             }
           },
           pre: [{ method: handleFiles }],
