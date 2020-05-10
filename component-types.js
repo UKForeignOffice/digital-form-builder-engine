@@ -45,6 +45,11 @@ module.exports = [
     subType: 'field'
   },
   {
+    name: 'AutocompleteField',
+    title: 'Autocomplete field',
+    subType: 'field'
+  },
+  {
     name: 'RadiosField',
     title: 'Radios field',
     subType: 'field'
